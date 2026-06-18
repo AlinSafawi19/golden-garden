@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import RollingText from "@/components/RollingText";
 
 type NavItem = {
@@ -20,11 +20,29 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [ctaHovered, setCtaHovered] = useState(false);
   const [mobileCta, setMobileCta] = useState(false);
+  const [hidden, setHidden] = useState(false);
+  const lastScrollY = useRef(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const current = window.scrollY;
+      setHidden(current > lastScrollY.current && current > 80);
+      lastScrollY.current = current;
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
-    <header className="w-full bg-white sticky top-0 z-50 relative">
+    <header
+      className="w-full bg-white sticky top-0 z-50 relative"
+      style={{
+        transform: hidden ? "translateY(-100%)" : "translateY(0)",
+        transition: "transform 0.4s cubic-bezier(0.25, 1, 0.5, 1)",
+      }}
+    >
       {/* Content — space-between, center-aligned, overflow clip */}
-      <div className="flex flex-row justify-between items-center overflow-hidden py-[16px] px-[20px] tablet:py-[24px] tablet:px-[30px] desktop:py-[32px]">
+      <div className="flex flex-row justify-between items-center overflow-hidden py-[16px] px-[20px]">
 
         {/* Logo Wrap */}
         <div className="flex flex-row items-center w-full justify-between tablet:w-auto tablet:justify-start tablet:gap-[10px]">

@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import { Rethink_Sans, Poppins } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import SmoothScroll from "@/components/SmoothScroll";
 import "./globals.css";
 
 const libreCaslon = localFont({
@@ -76,8 +77,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${libreCaslon.variable} ${rethinkSans.variable} ${poppins.variable}`}>
+    <html lang="en" className={`${libreCaslon.variable} ${rethinkSans.variable} ${poppins.variable} scroll-smooth`}>
       <body className="flex flex-col min-h-screen">
+        <SmoothScroll />
         <Navbar />
         <main className="flex-1">{children}</main>
         <Footer />

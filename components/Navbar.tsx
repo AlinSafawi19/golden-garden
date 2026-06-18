@@ -22,7 +22,7 @@ export default function Navbar() {
   const [mobileCta, setMobileCta] = useState(false);
 
   return (
-    <header className="w-full bg-white sticky top-0 z-50">
+    <header className="w-full bg-white sticky top-0 z-50 relative">
       {/* Content — space-between, center-aligned, overflow clip */}
       <div className="flex flex-row justify-between items-center overflow-hidden py-[16px] px-[20px] tablet:py-[24px] tablet:px-[30px] desktop:py-[32px]">
 
@@ -104,7 +104,7 @@ export default function Navbar() {
 
       {/* Mobile Dropdown — spring-approximated with max-height */}
       <div
-        className="overflow-hidden bg-[var(--color-off-white)]"
+        className="absolute top-full left-0 right-0 z-50 overflow-hidden bg-[var(--color-off-white)]"
         style={{
           maxHeight: mobileOpen ? "400px" : "0px",
           opacity: mobileOpen ? 1 : 0,
@@ -112,17 +112,20 @@ export default function Navbar() {
             "max-height 0.8s cubic-bezier(0.37, 0, 0.63, 1), opacity 0.8s cubic-bezier(0.37, 0, 0.63, 1)",
         }}
       >
-        <nav className="flex flex-col p-[20px] gap-[6px]">
-          {navItems.map((item) => (
-            <Link
-              key={item.title}
-              href={item.href}
-              className="menu-item"
-              onClick={() => setMobileOpen(false)}
-            >
-              <RollingText>{item.title}</RollingText>
-            </Link>
-          ))}
+        <nav className="flex flex-col p-[20px] gap-[20px]">
+          <div className="flex flex-col gap-[6px]">
+            {navItems.map((item) => (
+              <Link
+                key={item.title}
+                href={item.href}
+                className="menu-item"
+                onClick={() => setMobileOpen(false)}
+              >
+                <RollingText>{item.title}</RollingText>
+              </Link>
+            ))}
+          </div>
+          <div>
           <Link
             href="/contact"
             className="inline-flex items-center gap-[8px] text-[var(--color-dark-gray)] no-underline hover:text-[var(--color-black)]"
@@ -147,6 +150,7 @@ export default function Navbar() {
             </span>
             <span style={{ fontFamily: "var(--font-sans)", fontWeight: 500, fontSize: "24px", letterSpacing: "-0.01em", lineHeight: 1 }}>]</span>
           </Link>
+          </div>
         </nav>
       </div>
     </header>

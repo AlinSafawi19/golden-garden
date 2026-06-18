@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { Rethink_Sans, Poppins } from "next/font/google";
+import Navbar from "@/components/Navbar";
 import "./globals.css";
 
 const libreCaslon = localFont({
@@ -75,7 +76,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${libreCaslon.variable} ${rethinkSans.variable} ${poppins.variable}`}>
-      <body>{children}</body>
+      <body>
+        <Navbar />
+        {children}
+      </body>
     </html>
   );
 }

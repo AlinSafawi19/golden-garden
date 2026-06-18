@@ -111,6 +111,60 @@
 }
 
 @layer components {
+  /* Nav menu item — Black variant */
+  .menu-item {
+    font-family: var(--font-sans), sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    color: var(--color-black);
+    font-size: 16px;
+    line-height: 1.6em;
+    letter-spacing: 0px;
+    text-decoration: none;
+  }
+
+  /* CTA arrow roll — slides out top-right, enters from bottom-left */
+  .arrow-roll {
+    display: inline-block;
+    overflow: hidden;
+    width: 20px;
+    height: 20px;
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .arrow-roll__item {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: transform 0.6s cubic-bezier(0.76, 0, 0.24, 1);
+    display: flex;
+  }
+
+  .arrow-roll__item:last-child {
+    transform: translate(-110%, 110%);
+  }
+
+  .cta-link:hover .arrow-roll__item:first-child {
+    transform: translate(110%, -110%);
+  }
+
+  .cta-link:hover .arrow-roll__item:last-child {
+    transform: translate(0, 0);
+  }
+
+  /* Rolling text — per character */
+  .rolling-char {
+    display: block;
+    transition: transform 0.6s cubic-bezier(0.76, 0, 0.24, 1);
+    white-space: pre;
+  }
+
+  .menu-item:hover .rolling-char {
+    transform: translateY(-100%);
+  }
+
+
   .body-16-regular-2 {
     font-family: var(--font-poppins), sans-serif;
     font-weight: 400;

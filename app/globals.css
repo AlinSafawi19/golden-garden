@@ -160,7 +160,8 @@
     white-space: pre;
   }
 
-  .menu-item:hover .rolling-char {
+  .menu-item:hover .rolling-char,
+  .footer-link:hover .rolling-char {
     transform: translateY(-100%);
   }
 

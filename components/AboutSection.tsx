@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 
 const SPRING =
@@ -43,13 +44,12 @@ export default function AboutSection() {
       >
         {/* Tag */}
         <div className="inline-flex flex-row justify-start items-center gap-[16px]">
-          <div
-            style={{
-              width: 20,
-              height: 20,
-              backgroundColor: "var(--color-near-black)",
-                            flexShrink: 0,
-            }}
+          <Image
+            src="/leaf-icon.svg"
+            alt=""
+            width={20}
+            height={20}
+            style={{ flexShrink: 0 }}
           />
           <span className="body-16-regular">About Us</span>
         </div>

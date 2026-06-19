@@ -11,7 +11,7 @@
   </g>
 
   <!-- Vertical mint divider -->
-  <line x1="108" y1="25" x2="108" y2="105" stroke="#A9FFCA" stroke-width="1"/>
+  <line x1="108" y1="25" x2="108" y2="105" stroke="#E8634A" stroke-width="1"/>
 
   <!-- Wordmark -->
   <text x="125" y="60"

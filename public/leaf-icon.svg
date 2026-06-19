@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="3 1 26 26">
+  <title>Golden Garden — Leaf Mark</title>
+
+  <!-- Simplified mark for small sizes — no midrib (too thin at 16–32px) -->
+  <g transform="translate(16, 22)">
+    <ellipse cx="0" cy="-8" rx="3" ry="8" fill="#E8634A" transform="rotate(-27)"/>
+    <ellipse cx="0" cy="-10" rx="4" ry="10" fill="#E8634A"/>
+    <ellipse cx="0" cy="-8" rx="3" ry="8" fill="#E8634A" transform="rotate(27)"/>
+    <line x1="0" y1="1" x2="0" y2="4" stroke="#E8634A" stroke-width="1.5" stroke-linecap="round"/>
+  </g>
+</svg>

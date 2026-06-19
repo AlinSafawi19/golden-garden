@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 
 const SPRING =
@@ -62,7 +63,7 @@ export default function ServicesSection() {
         {/* Left — tag + line */}
         <div className="w-full desktop:w-auto desktop:flex-shrink-0 flex flex-col gap-[24px]">
           <div className="flex flex-row justify-start items-center gap-[16px]">
-            <div style={{ width: 20, height: 20, backgroundColor: "var(--color-near-black)", flexShrink: 0 }} />
+            <Image src="/leaf-icon.svg" alt="" width={20} height={20} style={{ flexShrink: 0 }} />
             <span className="body-16-regular">Services</span>
           </div>
         </div>
@@ -107,7 +108,7 @@ export default function ServicesSection() {
               <span className="heading-2c" style={{ color: "var(--color-near-black)" }}>{s.num}</span>
               <div className="flex flex-col gap-[24px]">
                 <div className="flex flex-row items-center gap-[20px]">
-                  <div style={{ width: 20, height: 22, backgroundColor: "var(--color-near-black)", flexShrink: 0 }} />
+                  <Image src="/leaf-icon.svg" alt="" width={20} height={22} style={{ flexShrink: 0 }} />
                   <span className="heading-2b" style={{ color: "var(--color-near-black)" }}>{s.title}</span>
                 </div>
                 <p className="body-16-regular" style={{ color: "#464646" }}>{s.desc}</p>

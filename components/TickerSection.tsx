@@ -5,9 +5,9 @@ import { useEffect, useRef, useState } from "react";
 const SPRING =
   "opacity 0.4s cubic-bezier(0.34, 1.2, 0.64, 1), transform 0.4s cubic-bezier(0.34, 1.2, 0.64, 1)";
 
-const IMG_URL = "/media/flower.jpg";
-const ROSE_URL = "/media/rose.jpg";
-const OLIVE_URL = "/media/olive.jpg";
+const IMG_URL = "https://framerusercontent.com/images/76SESx55PZQTsvHiVatoZyaZR8.png?width=440&height=350";
+const ROSE_URL = "https://framerusercontent.com/images/Qn9EmOAfD61P9Jf4OPH5jIymKH8.png?width=440&height=350";
+const OLIVE_URL = "https://framerusercontent.com/images/ySuHeBzPgTDgdr6rEOQ9dNAXm7o.png?width=440&height=350";
 
 function TickerItem() {
   return (

@@ -115,7 +115,7 @@ export default function Footer() {
         </div>
 
         {/* Copyright */}
-        <div className="mt-[30px] tablet:mt-[40px] flex flex-col gap-[16px] items-center tablet:flex-row tablet:justify-between tablet:items-center border-t border-[var(--color-mint-green)]/40 pt-[30px] tablet:pt-[40px]">
+        <div className="mt-[30px] tablet:mt-[40px] flex flex-col gap-[16px] items-center tablet:flex-row tablet:justify-between tablet:items-center pt-[30px] tablet:pt-[40px]">
           <p className="body-20-regular-2">© 2026 Copyright - Golden Garden</p>
           <p className="body-20-regular-2">All rights reserved.</p>
         </div>

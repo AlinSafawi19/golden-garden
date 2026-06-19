@@ -124,7 +124,10 @@ export default function WorkSection() {
 
       {/* Tablet+ layout */}
       {!isMobile && <div>
-        <div className="relative desktop:sticky desktop:top-0 w-full max-w-[1296px] mx-auto h-screen flex flex-col justify-center items-center px-[30px]">
+        <div
+          className="relative desktop:sticky max-w-[1296px] mx-auto desktop:top-0 w-full h-screen flex flex-col justify-center items-center overflow-hidden"
+        >
+          {/* Center text */}
           <div
             className="flex flex-col gap-[10px] items-center"
             style={{
@@ -132,105 +135,83 @@ export default function WorkSection() {
               transition: SPRING,
             }}
           >
-            <h2 className="heading-1b" style={{ color: "#ffffff" }}>
-              [OUR WORK]
-            </h2>
+            <h2 className="heading-1b" style={{ color: "#ffffff" }}>[OUR WORK]</h2>
             {ctaLink}
           </div>
 
-          {/* Garden Retreat */}
+          {/* Garden Retreat — top left */}
           <div
-            className="absolute top-[20px] left-[30px] flex flex-col gap-[20px]"
+            className="absolute"
             style={{
-              maxWidth: isDesktop ? 417 : 300,
-              transform: (!isDesktop || visible) ? "translate(0px, 0px)" : "translate(441px, 222px)",
+              top: "5%",
+              left: "30px",
+              width: isDesktop ? 417 : 300,
+              transform: (!isDesktop || visible) ? "translate(0,0)" : "translate(400px, 220px)",
               transition: SPRING_CARD,
             }}
           >
-            <div
-              className="flex flex-col gap-[26px]"
-              style={{ backgroundColor: "var(--color-dark-teal)", borderRadius: 12 }}
-            >
-              <div style={{ height: isDesktop ? 234 : 170, borderRadius: 12, overflow: "hidden" }}>
-                <img
-                  src={cards[0].src}
-                  alt={cards[0].alt}
-                  style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-                />
+            <div className="flex flex-col gap-[16px]" style={{ backgroundColor: "var(--color-dark-teal)", borderRadius: 12 }}>
+              <div style={{ height: isDesktop ? 220 : 160, borderRadius: 12, overflow: "hidden" }}>
+                <img src={cards[0].src} alt={cards[0].alt} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
               </div>
-              <h3 className="heading-2b" style={{ color: "#ffffff", textAlign: "center" }}>{cards[0].label}</h3>
+              <h3 className="heading-2b" style={{ color: "#ffffff", textAlign: "center", paddingBottom: 16 }}>{cards[0].label}</h3>
             </div>
           </div>
 
-          {/* Floral Escape */}
+          {/* Floral Escape — top right */}
           <div
-            className="absolute top-[20px] right-[30px] flex flex-col gap-[20px]"
+            className="absolute"
             style={{
-              maxWidth: isDesktop ? 417 : 300,
-              transform: (!isDesktop || visible) ? "translate(0px, 0px)" : "translate(-439px, 241px)",
+              top: "5%",
+              right: "30px",
+              width: isDesktop ? 417 : 300,
+              transform: (!isDesktop || visible) ? "translate(0,0)" : "translate(-400px, 220px)",
               transition: SPRING_CARD_2,
             }}
           >
-            <div
-              className="flex flex-col gap-[26px]"
-              style={{ backgroundColor: "var(--color-dark-teal)", borderRadius: 12 }}
-            >
-              <div style={{ width: isDesktop ? 417 : 300, height: isDesktop ? 234 : 170, borderRadius: 12, overflow: "hidden" }}>
-                <img
-                  src={cards[1].src}
-                  alt={cards[1].alt}
-                  style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-                />
+            <div className="flex flex-col gap-[16px]" style={{ backgroundColor: "var(--color-dark-teal)", borderRadius: 12 }}>
+              <div style={{ height: isDesktop ? 220 : 160, borderRadius: 12, overflow: "hidden" }}>
+                <img src={cards[1].src} alt={cards[1].alt} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
               </div>
-              <h3 className="heading-2b" style={{ color: "#ffffff", textAlign: "center" }}>{cards[1].label}</h3>
+              <h3 className="heading-2b" style={{ color: "#ffffff", textAlign: "center", paddingBottom: 16 }}>{cards[1].label}</h3>
             </div>
           </div>
 
-          {/* Vegetable Garden */}
+          {/* Vegetable Garden — bottom left */}
           <div
-            className="absolute bottom-[20px] left-[30px] flex flex-col gap-[20px]"
+            className="absolute"
             style={{
-              maxWidth: isDesktop ? 417 : 300,
-              transform: (!isDesktop || visible) ? "translate(0px, 0px)" : "translate(439px, -320px)",
+              bottom: "5%",
+              left: "30px",
+              width: isDesktop ? 417 : 300,
+              transform: (!isDesktop || visible) ? "translate(0,0)" : "translate(400px, -220px)",
               transition: SPRING_CARD_2,
             }}
           >
-            <div
-              className="flex flex-col gap-[26px]"
-              style={{ backgroundColor: "var(--color-dark-teal)", borderRadius: 12 }}
-            >
-              <div style={{ width: isDesktop ? 417 : 300, height: isDesktop ? 234 : 170, borderRadius: 12, overflow: "hidden" }}>
-                <img
-                  src={cards[2].src}
-                  alt={cards[2].alt}
-                  style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-                />
+            <div className="flex flex-col gap-[16px]" style={{ backgroundColor: "var(--color-dark-teal)", borderRadius: 12 }}>
+              <div style={{ height: isDesktop ? 220 : 160, borderRadius: 12, overflow: "hidden" }}>
+                <img src={cards[2].src} alt={cards[2].alt} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
               </div>
-              <h3 className="heading-2b" style={{ color: "#ffffff", textAlign: "center", minHeight: isDesktop ? 97 : 88 }}>{cards[2].label}</h3>
+              <h3 className="heading-2b" style={{ color: "#ffffff", textAlign: "center", paddingBottom: 16 }}>{cards[2].label}</h3>
             </div>
           </div>
 
-          {/* Boom Heaven */}
+          {/* Boom Heaven — bottom right */}
           <div
-            className="absolute bottom-[20px] right-[30px] flex flex-col gap-[20px]"
+            className="absolute"
             style={{
-              maxWidth: isDesktop ? 417 : 300,
-              transform: (!isDesktop || visible) ? "translate(0px, 0px)" : "translate(-438px, -296px)",
+              bottom: "5%",
+              right: "30px",
+              width: isDesktop ? 417 : 300,
+              transform: (!isDesktop || visible) ? "translate(0,0)" : "translate(-400px, -220px)",
               transition: SPRING_CARD_2,
             }}
           >
-            <div
-              className="flex flex-col gap-[26px]"
-              style={{ backgroundColor: "var(--color-dark-teal)", borderRadius: 12 }}
-            >
-              <div style={{ width: isDesktop ? 417 : 300, height: isDesktop ? 234 : 170, borderRadius: 12, overflow: "hidden" }}>
-                <img
-                  src={cards[3].src}
-                  alt={cards[3].alt}
-                  style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-                />
+            <div className="flex flex-col gap-[16px]" style={{ backgroundColor: "var(--color-dark-teal)", borderRadius: 12 }}>
+              <div style={{ height: isDesktop ? 220 : 160, borderRadius: 12, overflow: "hidden" }}>
+                <img src={cards[3].src} alt={cards[3].alt} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
               </div>
-              <h3 className="heading-2b" style={{ color: "#ffffff", textAlign: "center", minHeight: isDesktop ? 97 : 88 }}>{cards[3].label}</h3>
+              <h3 className="heading-2b" style={{ color: "#ffffff", textAlign: "center", paddingBottom: 16 }}>{cards[3].label}</h3>
             </div>
           </div>
         </div>

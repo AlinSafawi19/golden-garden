@@ -50,28 +50,29 @@ export default function TestimonialsSection() {
   return (
     <section
       ref={ref}
-      className="w-full flex flex-col gap-[10px] pt-[60px] px-[20px] pb-[60px] tablet:pt-[80px] tablet:px-[30px] tablet:pb-[80px] desktop:pt-[150px] desktop:px-[30px] desktop:pb-[150px]"
+      className="w-full flex flex-col pt-[60px] px-[20px] pb-[60px] tablet:pt-[80px] tablet:px-[30px] tablet:pb-[80px] desktop:pt-[150px] desktop:px-[30px] desktop:pb-[150px]"
       style={{ backgroundColor: "var(--color-soft-white)" }}
     >
       {/* Header */}
       <div
-        className="w-full max-w-[1296px] mx-auto flex flex-col gap-[24px] desktop:flex-row desktop:justify-between desktop:items-end"
+        className="w-full max-w-[1296px] mx-auto flex flex-col gap-[24px]"
         style={{
           opacity: visible ? 1 : 0,
           transform: visible ? "translateY(0px)" : "translateY(30px)",
           transition: SPRING,
         }}
       >
-        <div className="flex flex-row items-center gap-[16px]">
+        <div className="flex flex-row justify-start items-center gap-[16px]">
           <Image src="/leaf-icon.svg" alt="" width={20} height={20} style={{ flexShrink: 0 }} />
           <span className="body-16-regular">Testimonials</span>
         </div>
-        <h2 style={{ color: "var(--color-near-black)" }}>What Our Clients Say</h2>
+        <div style={{ width: "100%", height: 1, backgroundColor: "var(--color-light-gray)" }} />
+        <h2 className="heading-1b tablet:max-w-[826px]" style={{ color: "var(--color-near-black)" }}>Happy Client Stories.</h2>
       </div>
 
       {/* Cards */}
       <div
-        className="w-full max-w-[1296px] mx-auto grid grid-cols-1 tablet:grid-cols-3 gap-[10px]"
+        className="w-full max-w-[1296px] mx-auto grid grid-cols-1 tablet:grid-cols-3 gap-[10px] mt-[40px] tablet:mt-[60px] desktop:mt-[72px]"
         style={{
           opacity: visible ? 1 : 0,
           transform: visible ? "translateY(0px)" : "translateY(30px)",

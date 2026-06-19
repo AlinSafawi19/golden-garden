@@ -82,7 +82,7 @@ function ContactCol({ col }: { col: (typeof contactColumns)[number] }) {
 export default function Footer() {
   return (
     <footer className="w-full" style={{ backgroundColor: "var(--color-dark-teal)" }}>
-      <div className="pt-[56px] px-[20px] pb-[16px] tablet:px-[30px]">
+      <div className="w-full max-w-[1296px] mx-auto pt-[56px] px-[20px] pb-[16px] tablet:px-[30px]">
 
         {/* Logo + Grids */}
         <div className="flex flex-col gap-[40px] tablet:gap-[60px] desktop:gap-[87px]">

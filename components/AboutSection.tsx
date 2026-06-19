@@ -34,7 +34,7 @@ export default function AboutSection() {
       className="w-full bg-white flex flex-row justify-center items-center gap-[10px] pt-[60px] px-[20px] pb-[60px] tablet:pt-[80px] tablet:px-[30px] tablet:pb-[80px] desktop:pt-[150px] desktop:px-[30px] desktop:pb-[50px]"
     >
       <div
-        className="w-full flex flex-col gap-[24px] tablet:flex-row tablet:gap-0 tablet:justify-between tablet:items-start"
+        className="w-full max-w-[1296px] mx-auto flex flex-col gap-[24px] tablet:flex-row tablet:gap-0 tablet:justify-between tablet:items-start"
         style={{
           opacity: visible ? 1 : 0,
           transform: visible ? "translateY(0px)" : "translateY(30px)",

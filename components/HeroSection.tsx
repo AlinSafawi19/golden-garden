@@ -7,6 +7,7 @@ export default function HeroSection() {
   const imageRef = useRef<HTMLImageElement>(null);
   const headingRef = useRef<HTMLDivElement>(null);
   const introRef = useRef<HTMLDivElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
   const wordmarkTextRef = useRef<HTMLSpanElement>(null);
 
   // "On Appear", per-character enter effect (see Framer panel):
@@ -44,11 +45,14 @@ export default function HeroSection() {
     const align = () => {
       const section = sectionRef.current;
       const intro = introRef.current;
+      const card = cardRef.current;
       const word = wordmarkTextRef.current;
-      if (!section || !intro || !word) return;
-      const left =
-        word.getBoundingClientRect().left - section.getBoundingClientRect().left;
-      intro.style.paddingLeft = `${left}px`;
+      if (!section || !word) return;
+      const sectionRect = section.getBoundingClientRect();
+      const wordRect = word.getBoundingClientRect();
+      // Intro starts at the wordmark's left edge; card ends at its right edge.
+      if (intro) intro.style.paddingLeft = `${wordRect.left - sectionRect.left}px`;
+      if (card) card.style.paddingRight = `${sectionRect.right - wordRect.right}px`;
     };
 
     const onScroll = () => {
@@ -62,7 +66,13 @@ export default function HeroSection() {
     };
 
     // Align while invisible, then reveal so the enter animation plays in place.
-    const reveal = () => introRef.current?.classList.add("intro-ready");
+    const reveal = () => {
+      introRef.current?.classList.add("intro-ready");
+      if (cardRef.current) {
+        cardRef.current.style.opacity = "1";
+        cardRef.current.style.transform = "translateX(0)";
+      }
+    };
 
     update();
     align();
@@ -104,13 +114,16 @@ export default function HeroSection() {
       {/* Bottom scrim — keeps the headline legible over any part of the photo */}
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[55%] bg-gradient-to-t from-black/55 via-black/20 to-transparent" />
 
+      {/* Top overlay — intro on mobile stacks above the card; split on tablet+ */}
+      <div className="absolute inset-x-0 top-0">
+
       {/* Top-left intro line — per-character "On Appear" enter effect */}
       <div
         ref={introRef}
-        className="absolute top-0 left-0 px-[20px] pt-[40px] tablet:px-[30px] tablet:pt-[60px]"
+        className="px-[20px] pt-[40px] tablet:px-[30px] tablet:pt-[60px]"
       >
         <h1
-          className="max-w-none tablet:max-w-[600px]"
+          className="max-w-none tablet:max-w-[330px] desktop:max-w-[600px]"
           style={{ color: "var(--color-white)" }}
         >
           {words.map((word, wi) => (
@@ -135,6 +148,63 @@ export default function HeroSection() {
             </span>
           ))}
         </h1>
+      </div>
+
+      {/* Stat card — under the intro on mobile, top-right on tablet+ */}
+      <div
+        ref={cardRef}
+        className="px-[20px] pt-[24px] tablet:absolute tablet:top-0 tablet:right-0 tablet:pl-0 tablet:pr-[30px] tablet:pt-[60px]"
+        style={{
+          opacity: 0,
+          transform: "translateX(40px)",
+          // Spring (stiffness 400 / damping 60 / mass 1) is overdamped → ease-out, 0.2s delay.
+          transition:
+            "opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.2s, transform 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.2s",
+        }}
+      >
+        <div className="flex w-full items-stretch gap-[16px] rounded-[12px] bg-white/20 p-[16px] backdrop-blur-[47px] tablet:w-[clamp(340px,34vw,440px)] tablet:gap-[23px] tablet:p-[21px]">
+          {/* Video */}
+          <video
+            src="https://framerusercontent.com/assets/ekmdQ1zyWDTrVTODmt0YYQ0Zrqs.mp4"
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="w-[clamp(100px,11vw,148px)] flex-shrink-0 self-stretch rounded-[12px] object-cover"
+          />
+
+          {/* Text column — blurb on top, stat row at the bottom */}
+          <div className="flex flex-1 flex-col justify-between gap-[16px] tablet:gap-[23px]">
+            <p
+              className="body-18-regular"
+              style={{ color: "var(--color-white)" }}
+            >
+              90k+ gardens have been saved and made from all over the world.
+            </p>
+
+            <div className="flex items-end justify-between">
+              <span
+                style={{
+                  fontFamily: "var(--font-heading), serif",
+                  fontWeight: 700,
+                  fontSize: "clamp(32px, 3.4vw, 44px)",
+                  lineHeight: 1,
+                  color: "var(--color-white)",
+                }}
+              >
+                90K+
+              </span>
+              <span
+                className="body-18-medium pb-[4px]"
+                style={{ color: "var(--color-white)" }}
+              >
+                Gardens
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
       </div>
 
       {/* Foreground parallax layer — full-bleed wordmark, centered, edge to edge */}

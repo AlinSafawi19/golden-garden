@@ -3,7 +3,7 @@ import HeroSlideshow from "@/components/HeroSlideshow";
 
 export default function AboutHero() {
   return (
-    <section className="-mt-[52px] w-full flex flex-col gap-[40px] pt-[110px] pb-0 overflow-hidden tablet:gap-[80px] tablet:pt-[150px] desktop:gap-[120px] desktop:pt-[180px]">
+    <section className="-mt-[52px] w-full flex flex-col gap-[40px] pt-[110px] pb-[40px] overflow-hidden tablet:gap-[80px] tablet:pt-[150px] tablet:pb-[60px] desktop:gap-[120px] desktop:pt-[180px] desktop:pb-[80px]">
       {/* Padded content */}
       <div className="px-[20px] tablet:px-[30px] desktop:px-[30px]">
         <div className="w-full max-w-[1296px] mx-auto flex flex-col gap-[40px] tablet:gap-[80px] desktop:gap-[120px]">

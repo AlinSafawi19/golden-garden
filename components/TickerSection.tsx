@@ -5,9 +5,9 @@ import { useEffect, useRef, useState } from "react";
 const SPRING =
   "opacity 0.4s cubic-bezier(0.34, 1.2, 0.64, 1), transform 0.4s cubic-bezier(0.34, 1.2, 0.64, 1)";
 
-const IMG_URL = "https://framerusercontent.com/images/76SESx55PZQTsvHiVatoZyaZR8.png?width=440&height=350";
-const ROSE_URL = "https://framerusercontent.com/images/Qn9EmOAfD61P9Jf4OPH5jIymKH8.png?width=440&height=350";
-const OLIVE_URL = "https://framerusercontent.com/images/ySuHeBzPgTDgdr6rEOQ9dNAXm7o.png?width=440&height=350";
+const IMG1_URL = "https://framerusercontent.com/images/76SESx55PZQTsvHiVatoZyaZR8.png?width=440&height=350";
+const IMG2_URL = "https://framerusercontent.com/images/ySuHeBzPgTDgdr6rEOQ9dNAXm7o.png?width=440&height=350";
+const IMG3_URL = "https://framerusercontent.com/images/Qn9EmOAfD61P9Jf4OPH5jIymKH8.png?width=440&height=350";
 
 function TickerItem() {
   return (
@@ -32,13 +32,13 @@ function TickerRow() {
 
 export default function TickerSection() {
   const ref = useRef<HTMLElement>(null);
-  const imgRef = useRef<HTMLDivElement>(null);
-  const roseRef = useRef<HTMLDivElement>(null);
-  const oliveRef = useRef<HTMLDivElement>(null);
+  const img1Ref = useRef<HTMLDivElement>(null);
+  const img2Ref = useRef<HTMLDivElement>(null);
+  const img3Ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
-  const [imgVisible, setImgVisible] = useState(false);
-  const [roseVisible, setRoseVisible] = useState(false);
-  const [oliveVisible, setOliveVisible] = useState(false);
+  const [img1Visible, setImg1Visible] = useState(false);
+  const [img2Visible, setImg2Visible] = useState(false);
+  const [img3Visible, setImg3Visible] = useState(false);
 
   useEffect(() => {
     const el = ref.current;
@@ -52,10 +52,10 @@ export default function TickerSection() {
   }, []);
 
   useEffect(() => {
-    const el = imgRef.current;
+    const el = img1Ref.current;
     if (!el) return;
     const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) { setImgVisible(true); observer.disconnect(); } },
+      ([entry]) => { if (entry.isIntersecting) { setImg1Visible(true); observer.disconnect(); } },
       { threshold: 0.1 }
     );
     observer.observe(el);
@@ -63,10 +63,10 @@ export default function TickerSection() {
   }, []);
 
   useEffect(() => {
-    const el = roseRef.current;
+    const el = img2Ref.current;
     if (!el) return;
     const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) { setRoseVisible(true); observer.disconnect(); } },
+      ([entry]) => { if (entry.isIntersecting) { setImg2Visible(true); observer.disconnect(); } },
       { threshold: 0.1 }
     );
     observer.observe(el);
@@ -74,10 +74,10 @@ export default function TickerSection() {
   }, []);
 
   useEffect(() => {
-    const el = oliveRef.current;
+    const el = img3Ref.current;
     if (!el) return;
     const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) { setOliveVisible(true); observer.disconnect(); } },
+      ([entry]) => { if (entry.isIntersecting) { setImg3Visible(true); observer.disconnect(); } },
       { threshold: 0.1 }
     );
     observer.observe(el);
@@ -96,30 +96,29 @@ export default function TickerSection() {
     >
       {/* Rolling image - must be painted before TickerRow so mix-blend-mode composites against it */}
       <div
-        ref={imgRef}
+        ref={img1Ref}
         className="unroll-mask absolute top-0 left-[20px] tablet:left-[30px] w-[100px] h-[80px] tablet:w-[150px] tablet:h-[119px] desktop:w-[220px] desktop:h-[175px] rounded-[8px] tablet:rounded-[12px] overflow-hidden"
         style={{
-          animation: imgVisible ? "unroll 0.8s linear forwards" : "none",
+          animation: img1Visible ? "unroll 0.8s linear forwards" : "none",
         }}
       >
         <img
-          src={IMG_URL}
+          src={IMG1_URL}
           alt=""
           className="w-full h-full object-cover"
           style={{ borderRadius: "inherit" }}
         />
       </div>
 
-      {/* Rose image - top right, same blend effect as flower */}
       <div
-        ref={roseRef}
+        ref={img2Ref}
         className="unroll-mask absolute top-0 right-[20px] tablet:right-[30px] desktop:right-[208px] w-[100px] h-[80px] tablet:w-[150px] tablet:h-[119px] desktop:w-[220px] desktop:h-[175px] rounded-[8px] tablet:rounded-[12px] overflow-hidden"
         style={{
-          animation: roseVisible ? "unroll 0.8s linear forwards" : "none",
+          animation: img2Visible ? "unroll 0.8s linear forwards" : "none",
         }}
       >
         <img
-          src={ROSE_URL}
+          src={IMG2_URL}
           alt=""
           className="w-full h-full object-cover"
           style={{ borderRadius: "inherit" }}
@@ -130,15 +129,15 @@ export default function TickerSection() {
 
       {/* Olive image - bottom center, above ticker, unaffected by blend */}
       <div
-        ref={oliveRef}
+        ref={img3Ref}
         className="unroll-mask absolute bottom-0 left-1/2 -translate-x-1/2 w-[100px] h-[80px] tablet:w-[150px] tablet:h-[119px] desktop:w-[220px] desktop:h-[175px] rounded-[8px] tablet:rounded-[12px] overflow-hidden"
         style={{
           zIndex: 1,
-          animation: oliveVisible ? "unroll 0.8s linear forwards" : "none",
+          animation: img3Visible ? "unroll 0.8s linear forwards" : "none",
         }}
       >
         <img
-          src={OLIVE_URL}
+          src={IMG3_URL}
           alt=""
           className="w-full h-full object-cover"
           style={{ borderRadius: "inherit" }}

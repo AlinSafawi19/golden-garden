@@ -23,9 +23,9 @@ const PRIMARY_COUNT = 3;
 export default function Navbar() {
   const pathname = usePathname();
   const overlayBg =
-    pathname === "/success-stories"
-      ? "var(--color-white)"
-      : "var(--color-off-white)";
+    pathname === "/"
+      ? "var(--color-off-white)"
+      : "var(--color-white)";
   const [mobileOpen, setMobileOpen] = useState(false);
   const [ctaHovered, setCtaHovered] = useState(false);
   const [mobileCta, setMobileCta] = useState(false);

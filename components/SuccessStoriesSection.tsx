@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-const SPRING =
+const SPRING_REVEAL =
   "opacity 0.4s cubic-bezier(0.34, 1.2, 0.64, 1), transform 0.4s cubic-bezier(0.34, 1.2, 0.64, 1)";
 const ARROW_TRANSITION = "transform 0.6s cubic-bezier(0.76, 0, 0.24, 1)";
 
@@ -35,21 +35,43 @@ const successStories = [
   },
 ];
 
-const CARD_GAP = 24;
+// --- Slideshow mechanics (mirrors HeroSlideshow) ---
+const VISUAL_GAP = 24;
+const INACTIVE_SCALE = 0.8;
+const DRAG_THRESHOLD = 50;
+const MAX_W = 636;
+const SPRING = "1s cubic-bezier(0.65, 0, 0.35, 1)";
+
+const N = successStories.length;   // 3
+const COPIES = 5;                  // 15 items total — 2 full copies buffer each side
+const EXTENDED = Array.from({ length: COPIES }, () => successStories).flat();
+const START = Math.floor(COPIES / 2) * N + 1; // copy 3, middle item = index 7
+
+// transitionEnd resets: keep current inside [N, 4N)
+const RESET_LOW = N;               // 3
+const RESET_HIGH = (COPIES - 1) * N; // 12
 
 export default function SuccessStoriesSection() {
   const ref = useRef<HTMLElement>(null);
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const stickyRef = useRef<HTMLDivElement>(null);
-  const clipRef = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
   const [ctaHovered, setCtaHovered] = useState(false);
 
-  const [isMobile, setIsMobile] = useState(false);
-  const [cardWidth, setCardWidth] = useState(636);
-  const [overflow, setOverflow] = useState(0);
-  const [contentHeight, setContentHeight] = useState(0);
-  const [translate, setTranslate] = useState(0);
+  // Slideshow state
+  const outerRef = useRef<HTMLDivElement>(null);
+  const [containerW, setContainerW] = useState(0);
+  const [, _setCurrent] = useState(START);
+  const [paused, setPaused] = useState(false);
+  const [noTransition, setNoTransition] = useState(false);
+  const [dragging, setDragging] = useState(false);
+  const [dragOffset, setDragOffset] = useState(0);
+  const currentRef = useRef(START);
+  const dragStartX = useRef(0);
+  const strideRef = useRef(1); // updated each render — safe to read in handlers
+
+  const setCurrent = (v: number) => {
+    currentRef.current = v;
+    _setCurrent(v);
+  };
 
   useEffect(() => {
     const el = ref.current;
@@ -67,45 +89,139 @@ export default function SuccessStoriesSection() {
     return () => observer.disconnect();
   }, []);
 
-  // Measure card width and the horizontal overflow distance within the content container
   useEffect(() => {
-    const measure = () => {
-      const sticky = stickyRef.current;
-      const clip = clipRef.current;
-      if (!sticky || !clip) return;
-      const vw = sticky.clientWidth;
-      const mobile = vw < 810;
-      const cw = vw >= 1200 ? 636 : vw >= 810 ? 560 : Math.min(300, vw - 80);
-      const cardsWidth =
-        successStories.length * cw + (successStories.length - 1) * CARD_GAP;
-      setIsMobile(mobile);
-      setCardWidth(cw);
-      setOverflow(Math.max(0, cardsWidth - clip.clientWidth));
-      setContentHeight(sticky.offsetHeight);
-    };
-    measure();
-    window.addEventListener("resize", measure);
-    return () => window.removeEventListener("resize", measure);
+    const el = outerRef.current;
+    if (!el) return;
+    const obs = new ResizeObserver(([entry]) => setContainerW(entry.contentRect.width));
+    obs.observe(el);
+    return () => obs.disconnect();
   }, []);
 
-  // While the section is pinned, drive the horizontal translate from how far
-  // we've scrolled into the over-tall track (rect.top goes 0 -> -overflow).
   useEffect(() => {
-    const section = sectionRef.current;
-    if (!section) return;
-    const handleScroll = () => {
-      if (overflow <= 0) {
-        setTranslate(0);
-        return;
-      }
-      const rect = section.getBoundingClientRect();
-      const progress = Math.max(0, Math.min(1, -rect.top / overflow));
-      setTranslate(-progress * overflow);
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [overflow]);
+    if (paused) return;
+    const timer = setInterval(() => setCurrent(currentRef.current + 1), 3000);
+    return () => clearInterval(timer);
+  }, [paused]);
+
+  const handleTransitionEnd = (e: React.TransitionEvent<HTMLDivElement>) => {
+    if (e.propertyName !== "transform") return;
+    const curr = currentRef.current;
+    if (curr >= RESET_HIGH) {
+      setNoTransition(true);
+      setCurrent(curr - (COPIES - 2) * N); // jump back 3 copies
+    } else if (curr < RESET_LOW) {
+      setNoTransition(true);
+      setCurrent(curr + (COPIES - 2) * N); // jump forward 3 copies
+    }
+  };
+
+  useEffect(() => {
+    if (!noTransition) return;
+    const id = requestAnimationFrame(() =>
+      requestAnimationFrame(() => setNoTransition(false))
+    );
+    return () => cancelAnimationFrame(id);
+  }, [noTransition]);
+
+  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.currentTarget.setPointerCapture(e.pointerId);
+
+    // If a mid-transition autoplay reset left current near an edge, snap back to center copy
+    const curr = currentRef.current;
+    if (curr < RESET_LOW || curr >= RESET_HIGH) {
+      const item = ((curr % N) + N) % N;
+      const safe = Math.floor(COPIES / 2) * N + item;
+      currentRef.current = safe;
+      _setCurrent(safe);
+    }
+
+    dragStartX.current = e.clientX;
+    setDragging(true);
+    setPaused(true);
+  };
+
+  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!dragging) return;
+    const stride = strideRef.current;
+    const raw = e.clientX - dragStartX.current;
+
+    // Live-correct if the drag would expose the edge of the extended array
+    const effectivePos = currentRef.current - raw / stride;
+    const MIN_IDX = 1;
+    const MAX_IDX = EXTENDED.length - 2; // 13
+
+    if (effectivePos < MIN_IDX) {
+      const shift = Math.ceil((MIN_IDX - effectivePos) / N) * N;
+      currentRef.current += shift;
+      _setCurrent(currentRef.current);
+      dragStartX.current -= shift * stride; // keep visual position unchanged
+    } else if (effectivePos > MAX_IDX) {
+      const shift = Math.ceil((effectivePos - MAX_IDX) / N) * N;
+      currentRef.current -= shift;
+      _setCurrent(currentRef.current);
+      dragStartX.current += shift * stride;
+    }
+
+    setDragOffset(e.clientX - dragStartX.current);
+  };
+
+  const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!dragging) return;
+    const delta = e.clientX - dragStartX.current;
+    setDragging(false);
+    setDragOffset(0);
+    setPaused(false);
+    if (delta < -DRAG_THRESHOLD) setCurrent(currentRef.current + 1);
+    else if (delta > DRAG_THRESHOLD) setCurrent(currentRef.current - 1);
+  };
+
+  // Derived layout values — also written to refs so handlers can read them
+  const isDesktop = containerW >= 1200;
+  const isMobile = containerW > 0 && containerW < 810;
+  const visualGap = isDesktop ? VISUAL_GAP : 20;
+  const itemW = Math.min(MAX_W, containerW * (isMobile ? 0.85 : 0.8));
+  const layoutGap = visualGap - (1 - INACTIVE_SCALE) / 2 * itemW;
+  const stride = itemW + layoutGap;
+  strideRef.current = stride;
+
+  // Use currentRef in trackX so live drag corrections take effect immediately
+  const trackX = containerW / 2 - itemW / 2 - currentRef.current * stride + dragOffset;
+
+  const card = (t: (typeof successStories)[number]) =>
+    isMobile ? (
+      <div
+        className="flex flex-col gap-[20px] p-[20px]"
+        style={{ width: "100%", backgroundColor: "var(--color-white)", borderRadius: 12 }}
+      >
+        <img src={t.image} alt={t.name} className="object-cover" style={{ borderRadius: 12, width: 166, height: 166 }} draggable={false} />
+        <div className="flex flex-col gap-[16px]">
+          <Stars />
+          <p className="heading-4b" style={{ color: "var(--color-black)" }}>{t.quote}</p>
+          <div className="flex flex-col gap-[4px]">
+            <span className="heading-4b" style={{ color: "var(--color-black)" }}>{t.name}</span>
+            <span className="body-16-regular" style={{ color: "#464646" }}>{t.location}</span>
+          </div>
+        </div>
+      </div>
+    ) : (
+      <div
+        className="flex flex-row gap-[20px] items-start"
+        style={{ width: "100%", backgroundColor: "var(--color-white)", borderRadius: 12, padding: "28px 30px" }}
+      >
+        <div className="flex-shrink-0">
+          <img src={t.image} alt={t.name} className="object-cover" style={{ width: 166, height: 166, maxWidth: 166, borderRadius: 12 }} draggable={false} />
+        </div>
+        <div className="flex flex-col gap-[16px]">
+          <Stars />
+          <p className="heading-4b" style={{ color: "var(--color-black)" }}>{t.quote}</p>
+          <div className="flex flex-col gap-[4px]">
+            <span className="heading-4b" style={{ color: "var(--color-black)" }}>{t.name}</span>
+            <span className="body-16-regular" style={{ color: "#464646" }}>{t.location}</span>
+          </div>
+        </div>
+      </div>
+    );
 
   const headerTop = (
     <div
@@ -113,7 +229,7 @@ export default function SuccessStoriesSection() {
       style={{
         opacity: visible ? 1 : 0,
         transform: visible ? "translateY(0px)" : "translateY(30px)",
-        transition: SPRING,
+        transition: SPRING_REVEAL,
       }}
     >
       <div className="flex flex-row justify-start items-center gap-[16px]">
@@ -149,15 +265,13 @@ export default function SuccessStoriesSection() {
     </Link>
   );
 
-  // Divider + title + CTA — this is where the sticky pin begins.
-  // On mobile the CTA moves below the cards (rendered separately).
   const headerMain = (
     <div
       className="w-full flex flex-col gap-[24px]"
       style={{
         opacity: visible ? 1 : 0,
         transform: visible ? "translateY(0px)" : "translateY(30px)",
-        transition: SPRING,
+        transition: SPRING_REVEAL,
       }}
     >
       <div style={{ width: "100%", height: 1, backgroundColor: "var(--color-light-gray)" }} />
@@ -166,88 +280,59 @@ export default function SuccessStoriesSection() {
     </div>
   );
 
-  // Big card — image left, content right (tablet + desktop)
-  const bigCard = (t: (typeof successStories)[number], key: number) => (
-    <div
-      key={key}
-      className="flex flex-row gap-[20px] items-start shrink-0"
-      style={{ width: cardWidth, backgroundColor: "var(--color-white)", borderRadius: 12, padding: "28px 30px" }}
-    >
-      <div className="flex-shrink-0">
-        <img src={t.image} alt={t.name} className="object-cover" style={{ width: 166, height: 166, maxWidth: 166, borderRadius: 12 }} />
-      </div>
-      <div className="flex flex-col gap-[16px]">
-        <Stars />
-        <p className="heading-4b" style={{ color: "var(--color-black)" }}>{t.quote}</p>
-        <div className="flex flex-col gap-[4px]">
-          <span className="heading-4b" style={{ color: "var(--color-black)" }}>{t.name}</span>
-          <span className="body-16-regular" style={{ color: "#464646" }}>{t.location}</span>
-        </div>
-      </div>
-    </div>
-  );
-
-  // Small card — image on top, content below (mobile)
-  const smallCard = (t: (typeof successStories)[number], key: number) => (
-    <div
-      key={key}
-      className="flex flex-col gap-[20px] p-[20px] shrink-0"
-      style={{ width: cardWidth, backgroundColor: "var(--color-white)", borderRadius: 12 }}
-    >
-      <img src={t.image} alt={t.name} className="object-cover" style={{ borderRadius: 12, width: 166, height: 166 }} />
-      <div className="flex flex-col gap-[16px]">
-        <Stars />
-        <p className="heading-4b" style={{ color: "var(--color-black)" }}>{t.quote}</p>
-        <div className="flex flex-col gap-[4px]">
-          <span className="heading-4b" style={{ color: "var(--color-black)" }}>{t.name}</span>
-          <span className="body-16-regular" style={{ color: "#464646" }}>{t.location}</span>
-        </div>
-      </div>
-    </div>
-  );
-
   return (
-    <section ref={ref} className="w-full">
-      {/* Tag + divider scroll away normally — the pin starts at the title below.
-          The soft-white background lives on the content blocks (not the section)
-          so the gap below the pinned cards stays transparent and reveals the
-          footer pinned behind the page. */}
-      <div style={{ backgroundColor: "var(--color-soft-white)" }}>
-        <div className="max-w-[1296px] mx-auto w-full px-[20px] tablet:px-[30px] pt-[60px] tablet:pt-[80px] desktop:pt-[120px]">
-          {headerTop}
-        </div>
+    <section ref={ref} className="w-full" style={{ backgroundColor: "var(--color-soft-white)" }}>
+      <div className="max-w-[1296px] mx-auto w-full px-[20px] tablet:px-[30px] pt-[60px] tablet:pt-[80px] desktop:pt-[120px]">
+        {headerTop}
       </div>
 
-      {/* Over-tall track: its extra height equals the horizontal overflow, so the
-          pinned content (title + cards) stays put while the cards scroll across */}
-      <div ref={sectionRef} style={overflow > 0 ? { height: `${contentHeight + overflow}px` } : undefined}>
-        <div
-          ref={stickyRef}
-          style={{
-            backgroundColor: "var(--color-soft-white)",
-            ...(overflow > 0 ? { position: "sticky", top: 0 } : {}),
-          }}
-        >
-          <div className="max-w-[1296px] mx-auto w-full px-[20px] tablet:px-[30px] pt-[24px] pb-[60px] tablet:pb-[80px] desktop:pb-[120px] flex flex-col gap-[24px] desktop:gap-[40px]">
-            {headerMain}
+      <div className="max-w-[1296px] mx-auto w-full px-[20px] tablet:px-[30px] pt-[24px] flex flex-col gap-[24px] desktop:gap-[40px]">
+        {headerMain}
+      </div>
 
-            <div ref={clipRef} className="overflow-hidden">
+      {/* Slideshow — same mechanics as the About Us hero slideshow, constrained to the section width */}
+      <div
+        ref={outerRef}
+        className="max-w-[1296px] mx-auto w-full px-[20px] tablet:px-[30px] overflow-hidden pt-[40px] pb-[60px] tablet:pb-[80px] desktop:pb-[120px]"
+        style={{ cursor: dragging ? "grabbing" : "grab" }}
+        onMouseEnter={() => !dragging && setPaused(true)}
+        onMouseLeave={() => !dragging && setPaused(false)}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerUp}
+      >
+        <div
+          className="flex items-center"
+          style={{
+            transform: `translateX(${trackX}px)`,
+            transition: noTransition || dragging ? "none" : `transform ${SPRING}`,
+            userSelect: "none",
+          }}
+          onTransitionEnd={handleTransitionEnd}
+        >
+          {EXTENDED.map((item, i) => {
+            const active = i === currentRef.current;
+            return (
               <div
-                className="flex items-stretch"
+                key={i}
+                className="shrink-0"
                 style={{
-                  gap: CARD_GAP,
-                  transform: `translateX(${translate}px)`,
-                  willChange: "transform",
+                  width: itemW,
+                  marginLeft: i === 0 ? 0 : layoutGap,
+                  zIndex: active ? 1 : 0,
+                  transform: active ? "scale(1)" : `scale(${INACTIVE_SCALE})`,
+                  transition: noTransition || dragging ? "none" : `transform ${SPRING}`,
                 }}
               >
-                {successStories.map((t, i) => (isMobile ? smallCard(t, i) : bigCard(t, i)))}
+                {card(item)}
               </div>
-            </div>
-
-            <div className="tablet:hidden flex justify-center">{moreStoriesLink}</div>
-          </div>
+            );
+          })}
         </div>
       </div>
+
+      <div className="tablet:hidden flex justify-center pb-[60px]">{moreStoriesLink}</div>
     </section>
   );
 }

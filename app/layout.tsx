@@ -78,10 +78,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${libreCaslon.variable} ${rethinkSans.variable} ${poppins.variable} scroll-smooth`}>
-      <body className="flex flex-col min-h-screen">
+      <body className="flex flex-col min-h-screen bg-[var(--color-soft-white)]">
         <SmoothScroll />
         <Navbar />
-        <main className="flex-1">{children}</main>
+        <main className="flex-1 relative z-[1]" style={{ paddingBottom: "var(--footer-h, 0px)" }}>
+          {children}
+        </main>
         <Footer />
       </body>
     </html>

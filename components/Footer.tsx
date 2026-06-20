@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import RollingText from "@/components/RollingText";
 
 const ARROW_TRANSITION = "transform 0.6s cubic-bezier(0.76, 0, 0.24, 1)";
@@ -88,9 +88,42 @@ function ContactCol({ col }: { col: (typeof contactColumns)[number] }) {
 
 export default function Footer() {
   const [ctaHovered, setCtaHovered] = useState(false);
+  const footerRef = useRef<HTMLElement>(null);
+  const [reveal, setReveal] = useState(false);
+
+  // On tablet+ the footer is pinned behind the page so it shows through the
+  // transparent gap left by the pinned Success Stories cards. We only do this
+  // when the footer fits the viewport — otherwise (mobile / very short windows)
+  // a fixed footer taller than the screen would clip its own top, so we keep it
+  // in normal flow. `--footer-h` reserves the space `main` lost to it.
+  useEffect(() => {
+    const el = footerRef.current;
+    if (!el) return;
+    const update = () => {
+      const canReveal = window.innerWidth >= 810 && el.offsetHeight <= window.innerHeight;
+      setReveal(canReveal);
+      document.documentElement.style.setProperty(
+        "--footer-h",
+        canReveal ? `${el.offsetHeight}px` : "0px"
+      );
+    };
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    window.addEventListener("resize", update);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", update);
+      document.documentElement.style.setProperty("--footer-h", "0px");
+    };
+  }, []);
 
   return (
-    <footer className="w-full" style={{ backgroundColor: "var(--color-dark-teal)" }}>
+    <footer
+      ref={footerRef}
+      className={`w-full ${reveal ? "fixed bottom-0 left-0 z-0" : "relative"}`}
+      style={{ backgroundColor: "var(--color-dark-teal)" }}
+    >
       <div className="w-full max-w-[1296px] mx-auto pt-[56px] px-[20px] pb-[16px] tablet:px-[30px]">
 
         {/* Logo + Grids */}

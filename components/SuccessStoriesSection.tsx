@@ -207,10 +207,15 @@ export default function SuccessStoriesSection() {
   );
 
   return (
-    <section ref={ref} className="w-full" style={{ backgroundColor: "var(--color-soft-white)" }}>
-      {/* Tag + divider scroll away normally — the pin starts at the title below */}
-      <div className="max-w-[1296px] mx-auto w-full px-[20px] tablet:px-[30px] pt-[60px] tablet:pt-[80px] desktop:pt-[120px]">
-        {headerTop}
+    <section ref={ref} className="w-full">
+      {/* Tag + divider scroll away normally — the pin starts at the title below.
+          The soft-white background lives on the content blocks (not the section)
+          so the gap below the pinned cards stays transparent and reveals the
+          footer pinned behind the page. */}
+      <div style={{ backgroundColor: "var(--color-soft-white)" }}>
+        <div className="max-w-[1296px] mx-auto w-full px-[20px] tablet:px-[30px] pt-[60px] tablet:pt-[80px] desktop:pt-[120px]">
+          {headerTop}
+        </div>
       </div>
 
       {/* Over-tall track: its extra height equals the horizontal overflow, so the
@@ -218,7 +223,10 @@ export default function SuccessStoriesSection() {
       <div ref={sectionRef} style={overflow > 0 ? { height: `${contentHeight + overflow}px` } : undefined}>
         <div
           ref={stickyRef}
-          style={overflow > 0 ? { position: "sticky", top: 0 } : undefined}
+          style={{
+            backgroundColor: "var(--color-soft-white)",
+            ...(overflow > 0 ? { position: "sticky", top: 0 } : {}),
+          }}
         >
           <div className="max-w-[1296px] mx-auto w-full px-[20px] tablet:px-[30px] pt-[24px] pb-[60px] tablet:pb-[80px] desktop:pb-[120px] flex flex-col gap-[24px] desktop:gap-[40px]">
             {headerMain}

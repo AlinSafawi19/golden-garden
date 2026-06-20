@@ -48,6 +48,7 @@ export default function SuccessStoriesSection() {
   const [isMobile, setIsMobile] = useState(false);
   const [cardWidth, setCardWidth] = useState(636);
   const [overflow, setOverflow] = useState(0);
+  const [contentHeight, setContentHeight] = useState(0);
   const [translate, setTranslate] = useState(0);
 
   useEffect(() => {
@@ -80,13 +81,15 @@ export default function SuccessStoriesSection() {
       setIsMobile(mobile);
       setCardWidth(cw);
       setOverflow(Math.max(0, cardsWidth - clip.clientWidth));
+      setContentHeight(sticky.offsetHeight);
     };
     measure();
     window.addEventListener("resize", measure);
     return () => window.removeEventListener("resize", measure);
   }, []);
 
-  // Drive the horizontal translate from how far the section has passed through the viewport
+  // While the section is pinned, drive the horizontal translate from how far
+  // we've scrolled into the over-tall track (rect.top goes 0 -> -overflow).
   useEffect(() => {
     const section = sectionRef.current;
     if (!section) return;
@@ -96,8 +99,7 @@ export default function SuccessStoriesSection() {
         return;
       }
       const rect = section.getBoundingClientRect();
-      const vh = window.innerHeight;
-      const progress = Math.max(0, Math.min(1, (vh - rect.top) / (vh + rect.height)));
+      const progress = Math.max(0, Math.min(1, -rect.top / overflow));
       setTranslate(-progress * overflow);
     };
     window.addEventListener("scroll", handleScroll, { passive: true });
@@ -105,7 +107,7 @@ export default function SuccessStoriesSection() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [overflow]);
 
-  const header = (
+  const headerTop = (
     <div
       className="w-full flex flex-col gap-[24px]"
       style={{
@@ -118,6 +120,19 @@ export default function SuccessStoriesSection() {
         <Image src="/leaf-icon.svg" alt="" width={20} height={20} style={{ flexShrink: 0 }} />
         <span className="body-16-regular">Success Stories</span>
       </div>
+    </div>
+  );
+
+  // Divider + title + CTA — this is where the sticky pin begins
+  const headerMain = (
+    <div
+      className="w-full flex flex-col gap-[24px]"
+      style={{
+        opacity: visible ? 1 : 0,
+        transform: visible ? "translateY(0px)" : "translateY(30px)",
+        transition: SPRING,
+      }}
+    >
       <div style={{ width: "100%", height: 1, backgroundColor: "var(--color-light-gray)" }} />
       <h2 className="heading-1b tablet:max-w-[826px]" style={{ color: "var(--color-near-black)" }}>Happy Client Stories.</h2>
       <Link
@@ -188,11 +203,20 @@ export default function SuccessStoriesSection() {
 
   return (
     <section ref={ref} className="w-full" style={{ backgroundColor: "var(--color-soft-white)" }}>
-      {/* Horizontal scroll tied to the section passing through the viewport — all breakpoints */}
-      <div ref={sectionRef}>
-        <div ref={stickyRef} className="py-[60px] tablet:py-[80px] desktop:py-[120px]">
-          <div className="max-w-[1296px] mx-auto px-[20px] tablet:px-[30px] flex flex-col gap-[24px] desktop:gap-[40px]">
-            {header}
+      {/* Tag + divider scroll away normally — the pin starts at the title below */}
+      <div className="max-w-[1296px] mx-auto w-full px-[20px] tablet:px-[30px] pt-[60px] tablet:pt-[80px] desktop:pt-[120px]">
+        {headerTop}
+      </div>
+
+      {/* Over-tall track: its extra height equals the horizontal overflow, so the
+          pinned content (title + cards) stays put while the cards scroll across */}
+      <div ref={sectionRef} style={overflow > 0 ? { height: `${contentHeight + overflow}px` } : undefined}>
+        <div
+          ref={stickyRef}
+          style={overflow > 0 ? { position: "sticky", top: 0 } : undefined}
+        >
+          <div className="max-w-[1296px] mx-auto w-full px-[20px] tablet:px-[30px] pt-[24px] pb-[60px] tablet:pb-[80px] desktop:pb-[120px] flex flex-col gap-[24px] desktop:gap-[40px]">
+            {headerMain}
 
             <div ref={clipRef} className="overflow-hidden">
               <div

@@ -130,7 +130,7 @@ export default function Footer() {
         <div className="flex flex-col gap-[40px] tablet:gap-[60px] desktop:gap-[87px]">
 
           {/* Logo */}
-          <img src="/logo-horizontal-white-text.svg" alt="Golden Garden" className="w-[180px] tablet:w-[220px]" />
+          <img src="" alt="Golden Garden" className="w-[180px] tablet:w-[220px]" />
 
           {/* Mobile: nav 2-col grid, then contact 1-col — separate stacks */}
           <div className="flex flex-col gap-[41px] tablet:hidden">

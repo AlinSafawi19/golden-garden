@@ -84,7 +84,7 @@ export default function Navbar() {
         {/* Logo Wrap */}
         <div className="flex flex-row items-center w-full justify-between tablet:w-auto tablet:justify-start tablet:gap-[10px]">
           <Link href="/" className="no-underline hover:no-underline outline-none focus:outline-none" aria-label="Go to home">
-            <img src="/logo-horizontal-dark-teal-text.svg" alt="Golden Garden" width={156} height={36} />
+            <img src="" alt="Golden Garden" width={156} height={36} />
           </Link>
 
           {/* Hamburger — phone only */}

@@ -23,6 +23,7 @@ const navColumns: { title: string; links: NavLink[] }[] = [
       { title: "About Us", href: "/about" },
       { title: "Success Stories", href: "/success-stories" },
       { title: "Blog", href: "/blog" },
+      { title: "Contact", href: "/contact" },
     ],
   },
   {

@@ -91,7 +91,7 @@ export default function SuccessStoriesSection() {
       >
         <div className="flex flex-row justify-start items-center gap-[16px]">
           <Image src="/leaf-icon.svg" alt="" width={20} height={20} style={{ flexShrink: 0 }} />
-          <span className="body-16-regular">SuccessStoriesSection</span>
+          <span className="body-16-regular">Success Stories</span>
         </div>
         <div style={{ width: "100%", height: 1, backgroundColor: "var(--color-light-gray)" }} />
         <h2 className="heading-1b tablet:max-w-[826px]" style={{ color: "var(--color-near-black)" }}>Happy Client Stories.</h2>

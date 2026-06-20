@@ -124,6 +124,43 @@ export default function Footer() {
 
         </div>
 
+        {/* Editorial CTA */}
+        <div
+          className="flex flex-col items-center text-center gap-[24px] tablet:flex-row tablet:items-end tablet:justify-between tablet:text-left mt-[40px] tablet:mt-[60px] desktop:mt-[87px] p-[24px] tablet:p-[40px] desktop:p-[56px]"
+          style={{ backgroundColor: "var(--color-mint-green)", borderRadius: "12px" }}
+        >
+          <h2
+            className="heading-editorial tablet:max-w-[820px]"
+            style={{ color: "var(--color-dark-teal)" }}
+          >
+            Let&apos;s grow something{" "}
+            <em style={{ color: "var(--color-coral)", fontStyle: "italic" }}>beautiful.</em>
+          </h2>
+          <Link
+            href="/contact"
+            className="cta-link inline-flex items-center gap-[8px] no-underline"
+            onMouseEnter={() => setCtaHovered(true)}
+            onMouseLeave={() => setCtaHovered(false)}
+            style={{ color: "var(--color-dark-teal)", transition: "color 0.6s cubic-bezier(0.44, 0, 0.56, 1)", flexShrink: 0 }}
+          >
+            <span style={{ ...bracketStyle, color: "var(--color-dark-teal)" }}>[</span>
+            <span className="body-16-regular" style={{ color: "var(--color-dark-teal)" }}>START A PROJECT</span>
+            <span aria-hidden="true" style={{ display: "inline-block", position: "relative", width: 20, height: 20, overflow: "hidden", flexShrink: 0 }}>
+              <span style={{ position: "absolute", inset: 0, display: "flex", transition: ARROW_TRANSITION, transform: ctaHovered ? "translate(110%, -110%)" : "translate(0, 0)" }}>
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M 15 0 L 15 10.5 L 13.637 10.5 L 13.637 2.5 L 1.5 15.5 L 0 14.088 L 12.5 1.5 L 3.729 1.5 L 3.729 0 Z" fill="currentColor" transform="translate(2.363 2.5)" />
+                </svg>
+              </span>
+              <span style={{ position: "absolute", inset: 0, display: "flex", transition: ARROW_TRANSITION, transform: ctaHovered ? "translate(0, 0)" : "translate(-110%, 110%)" }}>
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M 15 0 L 15 10.5 L 13.637 10.5 L 13.637 2.5 L 1.5 15.5 L 0 14.088 L 12.5 1.5 L 3.729 1.5 L 3.729 0 Z" fill="currentColor" transform="translate(2.363 2.5)" />
+                </svg>
+              </span>
+            </span>
+            <span style={{ ...bracketStyle, color: "var(--color-dark-teal)" }}>]</span>
+          </Link>
+        </div>
+
         {/* Copyright */}
         <div className="mt-[30px] tablet:mt-[40px] flex flex-col gap-[16px] items-center tablet:flex-row tablet:justify-between tablet:items-center">
           <p className="body-20-regular-2">© 2026 Copyright - Golden Garden</p>

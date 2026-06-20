@@ -368,6 +368,27 @@
     .heading-2c { font-size: 64px; }
   }
 
+  .heading-editorial {
+    font-family: var(--font-heading), serif;
+    font-weight: 700;
+    font-style: normal;
+    color: var(--color-near-black);
+    text-transform: none;
+    letter-spacing: -0.03em;
+    line-height: 1em;
+    text-decoration: none;
+    font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+    font-size: 38px;
+  }
+
+  @media (min-width: 810px) {
+    .heading-editorial { font-size: 56px; }
+  }
+
+  @media (min-width: 1200px) {
+    .heading-editorial { font-size: 80px; }
+  }
+
   .heading-1b {
     font-family: var(--font-heading), serif;
     font-weight: 600;

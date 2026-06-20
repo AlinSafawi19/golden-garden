@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const IMG_HOVER = "transform 0.7s cubic-bezier(0.34, 1.1, 0.64, 1)";
 
@@ -42,6 +42,56 @@ export default function ProjectDetailsContent() {
   const [openSrc, setOpenSrc] = useState<string | null>(null);
   const [openItem, setOpenItem] = useState(0);
 
+  const featureRef = useRef<HTMLDivElement>(null);
+  const featureImgRef = useRef<HTMLImageElement>(null);
+
+  useEffect(() => {
+    let frame = 0;
+
+    const update = () => {
+      frame = 0;
+      const frameEl = featureRef.current;
+      const image = featureImgRef.current;
+      if (!frameEl || !image) return;
+
+      const rect = frameEl.getBoundingClientRect();
+      const vh = window.innerHeight;
+      // Skip work while the frame is well outside the viewport.
+      if (rect.bottom < 0 || rect.top > vh) return;
+
+      // 0 when the frame's top edge is at the bottom of the viewport,
+      // 1 when that top edge reaches the top. Clamped so the motion eases
+      // at the edges. Tracking the top means the parallax begins the moment
+      // the frame starts entering, not once it's centered.
+      const raw = 1 - rect.top / vh;
+      const progress = Math.min(1, Math.max(0, raw));
+
+      // The image is 128% tall, leaving 14% of overflow on each side to drift
+      // through. Pair the vertical drift with a gentle zoom-out and a hair of
+      // skew/rotation so the photo feels like it's settling into its frame.
+      const drift = (progress - 0.5) * 28; // -14% -> +14%
+      const scale = 1.12 - progress * 0.12; // 1.12 -> 1.00
+      const rotate = (0.5 - progress) * 1.4; // subtle tilt that levels out
+
+      image.style.transform = `translate3d(0, ${drift}%, 0) scale(${scale}) rotate(${rotate}deg)`;
+    };
+
+    const onScroll = () => {
+      if (frame) return;
+      frame = requestAnimationFrame(update);
+    };
+
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll, { passive: true });
+
+    return () => {
+      if (frame) cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, []);
+
   const imgStyle = (key: string) => ({
     width: "100%",
     height: "100%",
@@ -68,12 +118,25 @@ export default function ProjectDetailsContent() {
         ))}
       </div>
 
-      {/* Feature image */}
-      <div style={{ borderRadius: 12, overflow: "hidden", aspectRatio: "16/9" }}>
+      {/* Feature image — scroll-driven parallax */}
+      <div
+        ref={featureRef}
+        style={{ borderRadius: 12, overflow: "hidden", aspectRatio: "16/9", position: "relative" }}
+      >
         <img
+          ref={featureImgRef}
           src="https://framerusercontent.com/images/HTojjv0KgmKSLldV2quyEE9fk94.png?width=834&height=468"
           alt="Project feature"
-          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+          style={{
+            position: "absolute",
+            top: "-14%",
+            left: 0,
+            width: "100%",
+            height: "128%",
+            objectFit: "cover",
+            display: "block",
+            willChange: "transform",
+          }}
         />
       </div>
 

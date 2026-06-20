@@ -30,7 +30,7 @@ export default function WhyChooseUsSection() {
         <span className="body-16-regular" style={{ color: "var(--color-off-white)" }}>Why Choose Us</span>
 
         {/* Stats */}
-        <div className="flex flex-col gap-[12px] tablet:flex-row tablet:justify-between desktop:flex-row desktop:max-w-[664px] desktop:gap-[60px]">
+        <div className="flex flex-col gap-[12px] text-center tablet:flex-row tablet:justify-between tablet:text-left desktop:flex-row desktop:max-w-[664px] desktop:gap-[60px]">
           <span className="body-18-semibold">440+ Project Completed</span>
           <span className="body-18-semibold">2M Happy Customers</span>
           <span className="body-18-semibold">10 Years of Experience</span>

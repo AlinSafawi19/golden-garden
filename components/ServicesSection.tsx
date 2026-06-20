@@ -46,6 +46,32 @@ export default function ServicesSection() {
     return () => observer.disconnect();
   }, []);
 
+  const viewServicesLink = (
+    <Link
+      href="/services"
+      className="cta-link inline-flex items-center gap-[8px] text-[var(--color-dark-gray)] no-underline hover:text-[var(--color-black)]"
+      onMouseEnter={() => setCtaHovered(true)}
+      onMouseLeave={() => setCtaHovered(false)}
+      style={{ transition: "color 0.6s cubic-bezier(0.44, 0, 0.56, 1)" }}
+    >
+      <span style={{ fontFamily: "var(--font-sans)", fontWeight: 500, fontSize: "24px", letterSpacing: "-0.01em", lineHeight: 1 }}>[</span>
+      <span className="body-16-regular" style={{ color: "var(--color-dark-gray)" }}>MORE SERVICES</span>
+      <span aria-hidden="true" style={{ display: "inline-block", position: "relative", width: 20, height: 20, overflow: "hidden", flexShrink: 0 }}>
+        <span style={{ position: "absolute", inset: 0, display: "flex", transition: ARROW_TRANSITION, transform: ctaHovered ? "translate(110%, -110%)" : "translate(0, 0)" }}>
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 15 0 L 15 10.5 L 13.637 10.5 L 13.637 2.5 L 1.5 15.5 L 0 14.088 L 12.5 1.5 L 3.729 1.5 L 3.729 0 Z" fill="currentColor" transform="translate(2.363 2.5)" />
+          </svg>
+        </span>
+        <span style={{ position: "absolute", inset: 0, display: "flex", transition: ARROW_TRANSITION, transform: ctaHovered ? "translate(0, 0)" : "translate(-110%, 110%)" }}>
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 15 0 L 15 10.5 L 13.637 10.5 L 13.637 2.5 L 1.5 15.5 L 0 14.088 L 12.5 1.5 L 3.729 1.5 L 3.729 0 Z" fill="currentColor" transform="translate(2.363 2.5)" />
+          </svg>
+        </span>
+      </span>
+      <span style={{ fontFamily: "var(--font-sans)", fontWeight: 500, fontSize: "24px", letterSpacing: "-0.01em", lineHeight: 1 }}>]</span>
+    </Link>
+  );
+
   return (
     <section
       ref={ref}
@@ -68,32 +94,10 @@ export default function ServicesSection() {
           </div>
         </div>
 
-        {/* Right — title + CTA */}
+        {/* Right — title + CTA (CTA moves below the cards on mobile) */}
         <div className="flex flex-col gap-[24px] desktop:max-w-[631px]">
           <h2 className="heading-1b" style={{ color: "var(--color-near-black)" }}>OUR SERVICES</h2>
-          <Link
-            href="/services"
-            className="cta-link inline-flex items-center gap-[8px] text-[var(--color-dark-gray)] no-underline hover:text-[var(--color-black)]"
-            onMouseEnter={() => setCtaHovered(true)}
-            onMouseLeave={() => setCtaHovered(false)}
-            style={{ transition: "color 0.6s cubic-bezier(0.44, 0, 0.56, 1)" }}
-          >
-            <span style={{ fontFamily: "var(--font-sans)", fontWeight: 500, fontSize: "24px", letterSpacing: "-0.01em", lineHeight: 1 }}>[</span>
-            <span className="body-16-regular" style={{ color: "var(--color-dark-gray)" }}>VIEW SERVICES</span>
-            <span aria-hidden="true" style={{ display: "inline-block", position: "relative", width: 20, height: 20, overflow: "hidden", flexShrink: 0 }}>
-              <span style={{ position: "absolute", inset: 0, display: "flex", transition: ARROW_TRANSITION, transform: ctaHovered ? "translate(110%, -110%)" : "translate(0, 0)" }}>
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M 15 0 L 15 10.5 L 13.637 10.5 L 13.637 2.5 L 1.5 15.5 L 0 14.088 L 12.5 1.5 L 3.729 1.5 L 3.729 0 Z" fill="currentColor" transform="translate(2.363 2.5)" />
-                </svg>
-              </span>
-              <span style={{ position: "absolute", inset: 0, display: "flex", transition: ARROW_TRANSITION, transform: ctaHovered ? "translate(0, 0)" : "translate(-110%, 110%)" }}>
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M 15 0 L 15 10.5 L 13.637 10.5 L 13.637 2.5 L 1.5 15.5 L 0 14.088 L 12.5 1.5 L 3.729 1.5 L 3.729 0 Z" fill="currentColor" transform="translate(2.363 2.5)" />
-                </svg>
-              </span>
-            </span>
-            <span style={{ fontFamily: "var(--font-sans)", fontWeight: 500, fontSize: "24px", letterSpacing: "-0.01em", lineHeight: 1 }}>]</span>
-          </Link>
+          <div className="hidden tablet:block">{viewServicesLink}</div>
         </div>
       </div>
 
@@ -120,6 +124,8 @@ export default function ServicesSection() {
           </div>
         ))}
       </div>
+
+      <div className="tablet:hidden flex justify-center">{viewServicesLink}</div>
     </section>
   );
 }

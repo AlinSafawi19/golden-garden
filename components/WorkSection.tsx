@@ -170,7 +170,7 @@ export default function WorkSection() {
                   style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", transition: IMG_HOVER, transform: hoveredCard === i ? "scale(1.1)" : "scale(1)" }}
                 />
               </div>
-              <h3 className="heading-2b" style={{ color: "#ffffff", textAlign: "center" }}>{card.label}</h3>
+              <h3 className="heading-3" style={{ color: "#ffffff", textAlign: "center" }}>{card.label}</h3>
             </div>
           ))}
         </div>
@@ -207,7 +207,7 @@ export default function WorkSection() {
               <div style={{ height: isDesktop ? 220 : 160, borderRadius: 12, overflow: "hidden" }}>
                 <img src={cards[0].src} alt={cards[0].alt} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", transition: IMG_HOVER, transform: hoveredCard === 0 ? "scale(1.1)" : "scale(1)" }} />
               </div>
-              <h3 className="heading-2b" style={{ color: "#ffffff", textAlign: "center", paddingBottom: 16 }}>{cards[0].label}</h3>
+              <h3 className="heading-3" style={{ color: "#ffffff", textAlign: "center", paddingBottom: 16 }}>{cards[0].label}</h3>
             </div>
           </div>
 
@@ -226,7 +226,7 @@ export default function WorkSection() {
               <div style={{ height: isDesktop ? 220 : 160, borderRadius: 12, overflow: "hidden" }}>
                 <img src={cards[1].src} alt={cards[1].alt} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", transition: IMG_HOVER, transform: hoveredCard === 1 ? "scale(1.1)" : "scale(1)" }} />
               </div>
-              <h3 className="heading-2b" style={{ color: "#ffffff", textAlign: "center", paddingBottom: 16 }}>{cards[1].label}</h3>
+              <h3 className="heading-3" style={{ color: "#ffffff", textAlign: "center", paddingBottom: 16 }}>{cards[1].label}</h3>
             </div>
           </div>
 
@@ -245,7 +245,7 @@ export default function WorkSection() {
               <div style={{ height: isDesktop ? 220 : 160, borderRadius: 12, overflow: "hidden" }}>
                 <img src={cards[2].src} alt={cards[2].alt} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", transition: IMG_HOVER, transform: hoveredCard === 2 ? "scale(1.1)" : "scale(1)" }} />
               </div>
-              <h3 className="heading-2b" style={{ color: "#ffffff", textAlign: "center", paddingBottom: 16 }}>{cards[2].label}</h3>
+              <h3 className="heading-3" style={{ color: "#ffffff", textAlign: "center", paddingBottom: 16 }}>{cards[2].label}</h3>
             </div>
           </div>
 
@@ -264,7 +264,7 @@ export default function WorkSection() {
               <div style={{ height: isDesktop ? 220 : 160, borderRadius: 12, overflow: "hidden" }}>
                 <img src={cards[3].src} alt={cards[3].alt} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", transition: IMG_HOVER, transform: hoveredCard === 3 ? "scale(1.1)" : "scale(1)" }} />
               </div>
-              <h3 className="heading-2b" style={{ color: "#ffffff", textAlign: "center", paddingBottom: 16 }}>{cards[3].label}</h3>
+              <h3 className="heading-3" style={{ color: "#ffffff", textAlign: "center", paddingBottom: 16 }}>{cards[3].label}</h3>
             </div>
           </div>
         </div>

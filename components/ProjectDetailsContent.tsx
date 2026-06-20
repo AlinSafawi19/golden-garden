@@ -64,7 +64,7 @@ export default function ProjectDetailsContent() {
       </div>
 
       {/* Gallery — left/right on desktop, stacked (right on top) on mobile */}
-      <div className="flex flex-col-reverse tablet:flex-row gap-[20px]">
+      <div className="flex flex-col tablet:flex-row gap-[20px]">
         {/* Left side — single card with hover scaling */}
         <div
           className="flex-1"

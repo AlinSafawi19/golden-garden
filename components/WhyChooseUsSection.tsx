@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 
 const ARROW_TRANSITION = "transform 0.6s cubic-bezier(0.76, 0, 0.24, 1)";
@@ -19,14 +18,8 @@ export default function WhyChooseUsSection() {
       }}
     >
       <div
-        className="relative w-full max-w-[1296px] mx-auto flex flex-col items-center gap-[24px] pt-[60px] pb-[60px] tablet:flex-row tablet:items-start tablet:justify-between tablet:gap-[30px] tablet:pt-[80px] tablet:pb-[80px] desktop:flex-row desktop:items-start desktop:justify-between desktop:gap-0 desktop:pt-[157px] desktop:pb-[157px]"
+        className="w-full max-w-[1296px] mx-auto flex flex-col items-center gap-[24px] pt-[60px] pb-[60px] tablet:flex-row tablet:items-start tablet:justify-between tablet:gap-[30px] tablet:pt-[80px] tablet:pb-[80px] desktop:flex-row desktop:items-start desktop:justify-between desktop:gap-0 desktop:pt-[157px] desktop:pb-[157px]"
       >
-        {/* Corner icons */}
-        <Image src="/leaf-icon-light.svg" alt="" width={20} height={20} style={{ position: "absolute", top: 0, left: 0, flexShrink: 0 }} />
-        <Image src="/leaf-icon-light.svg" alt="" width={20} height={20} style={{ position: "absolute", top: 0, right: 0, flexShrink: 0 }} />
-        <Image src="/leaf-icon-light.svg" alt="" width={20} height={20} style={{ position: "absolute", bottom: 0, left: 0, flexShrink: 0 }} />
-        <Image src="/leaf-icon-light.svg" alt="" width={20} height={20} style={{ position: "absolute", bottom: 0, right: 0, flexShrink: 0 }} />
-
         <span className="body-16-regular" style={{ color: "var(--color-off-white)" }}>Why Choose Us</span>
 
         {/* Stats */}

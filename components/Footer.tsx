@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import RollingText from "@/components/RollingText";
+import Logo from "@/components/Logo";
 
 const ARROW_TRANSITION = "transform 0.6s cubic-bezier(0.76, 0, 0.24, 1)";
 
@@ -130,7 +131,7 @@ export default function Footer() {
         <div className="flex flex-col gap-[40px] tablet:gap-[60px] desktop:gap-[87px]">
 
           {/* Logo */}
-          <img src="" alt="Golden Garden" className="w-[180px] tablet:w-[220px]" />
+          <Logo tone="onDark" symbolSize={48} />
 
           {/* Mobile: nav 2-col grid, then contact 1-col — separate stacks */}
           <div className="flex flex-col gap-[41px] tablet:hidden">

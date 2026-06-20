@@ -35,12 +35,20 @@ const successStories = [
   },
 ];
 
+const CARD_GAP = 24;
 
 export default function SuccessStoriesSection() {
   const ref = useRef<HTMLElement>(null);
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const stickyRef = useRef<HTMLDivElement>(null);
+  const clipRef = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
-  const [count, setCount] = useState(0);
   const [ctaHovered, setCtaHovered] = useState(false);
+
+  const [isMobile, setIsMobile] = useState(false);
+  const [cardWidth, setCardWidth] = useState(636);
+  const [overflow, setOverflow] = useState(0);
+  const [translate, setTranslate] = useState(0);
 
   useEffect(() => {
     const el = ref.current;
@@ -58,174 +66,146 @@ export default function SuccessStoriesSection() {
     return () => observer.disconnect();
   }, []);
 
+  // Measure card width and the horizontal overflow distance within the content container
   useEffect(() => {
-    if (!visible) return;
-    const duration = 1800;
-    const target = 2000;
-    const start = performance.now();
-    let raf: number;
-    const animate = (now: number) => {
-      const progress = Math.min((now - start) / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      setCount(Math.round(eased * target));
-      if (progress < 1) raf = requestAnimationFrame(animate);
+    const measure = () => {
+      const sticky = stickyRef.current;
+      const clip = clipRef.current;
+      if (!sticky || !clip) return;
+      const vw = sticky.clientWidth;
+      const mobile = vw < 810;
+      const cw = vw >= 1200 ? 636 : vw >= 810 ? 560 : Math.min(300, vw - 80);
+      const cardsWidth =
+        successStories.length * cw + (successStories.length - 1) * CARD_GAP;
+      setIsMobile(mobile);
+      setCardWidth(cw);
+      setOverflow(Math.max(0, cardsWidth - clip.clientWidth));
     };
-    raf = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(raf);
-  }, [visible]);
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, []);
+
+  // Drive the horizontal translate from how far the section has passed through the viewport
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+    const handleScroll = () => {
+      if (overflow <= 0) {
+        setTranslate(0);
+        return;
+      }
+      const rect = section.getBoundingClientRect();
+      const vh = window.innerHeight;
+      const progress = Math.max(0, Math.min(1, (vh - rect.top) / (vh + rect.height)));
+      setTranslate(-progress * overflow);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [overflow]);
+
+  const header = (
+    <div
+      className="w-full flex flex-col gap-[24px]"
+      style={{
+        opacity: visible ? 1 : 0,
+        transform: visible ? "translateY(0px)" : "translateY(30px)",
+        transition: SPRING,
+      }}
+    >
+      <div className="flex flex-row justify-start items-center gap-[16px]">
+        <Image src="/leaf-icon.svg" alt="" width={20} height={20} style={{ flexShrink: 0 }} />
+        <span className="body-16-regular">Success Stories</span>
+      </div>
+      <div style={{ width: "100%", height: 1, backgroundColor: "var(--color-light-gray)" }} />
+      <h2 className="heading-1b tablet:max-w-[826px]" style={{ color: "var(--color-near-black)" }}>Happy Client Stories.</h2>
+      <Link
+        href="/success-stories"
+        className="cta-link inline-flex items-center gap-[8px] no-underline"
+        onMouseEnter={() => setCtaHovered(true)}
+        onMouseLeave={() => setCtaHovered(false)}
+        style={{ color: "var(--color-dark-gray)", transition: "color 0.6s cubic-bezier(0.44, 0, 0.56, 1)" }}
+      >
+        <span style={{ fontFamily: "var(--font-sans)", fontWeight: 500, fontSize: "24px", letterSpacing: "-0.01em", lineHeight: 1 }}>[</span>
+        <span className="body-16-regular" style={{ color: "var(--color-dark-gray)" }}>MORE STORIES</span>
+        <span aria-hidden="true" style={{ display: "inline-block", position: "relative", width: 20, height: 20, overflow: "hidden", flexShrink: 0 }}>
+          <span style={{ position: "absolute", inset: 0, display: "flex", transition: ARROW_TRANSITION, transform: ctaHovered ? "translate(110%, -110%)" : "translate(0, 0)" }}>
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M 15 0 L 15 10.5 L 13.637 10.5 L 13.637 2.5 L 1.5 15.5 L 0 14.088 L 12.5 1.5 L 3.729 1.5 L 3.729 0 Z" fill="currentColor" transform="translate(2.363 2.5)" />
+            </svg>
+          </span>
+          <span style={{ position: "absolute", inset: 0, display: "flex", transition: ARROW_TRANSITION, transform: ctaHovered ? "translate(0, 0)" : "translate(-110%, 110%)" }}>
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M 15 0 L 15 10.5 L 13.637 10.5 L 13.637 2.5 L 1.5 15.5 L 0 14.088 L 12.5 1.5 L 3.729 1.5 L 3.729 0 Z" fill="currentColor" transform="translate(2.363 2.5)" />
+            </svg>
+          </span>
+        </span>
+        <span style={{ fontFamily: "var(--font-sans)", fontWeight: 500, fontSize: "24px", letterSpacing: "-0.01em", lineHeight: 1 }}>]</span>
+      </Link>
+    </div>
+  );
+
+  // Big card — image left, content right (tablet + desktop)
+  const bigCard = (t: (typeof successStories)[number], key: number) => (
+    <div
+      key={key}
+      className="flex flex-row gap-[20px] items-start shrink-0"
+      style={{ width: cardWidth, backgroundColor: "var(--color-white)", borderRadius: 12, padding: "28px 30px" }}
+    >
+      <div className="flex-shrink-0">
+        <img src={t.image} alt={t.name} className="object-cover" style={{ width: 166, height: 166, maxWidth: 166, borderRadius: 12 }} />
+      </div>
+      <div className="flex flex-col gap-[16px]">
+        <Stars />
+        <p className="heading-4b" style={{ color: "var(--color-black)" }}>{t.quote}</p>
+        <div className="flex flex-col gap-[4px]">
+          <span className="heading-4b" style={{ color: "var(--color-black)" }}>{t.name}</span>
+          <span className="body-16-regular" style={{ color: "#464646" }}>{t.location}</span>
+        </div>
+      </div>
+    </div>
+  );
+
+  // Small card — image on top, content below (mobile)
+  const smallCard = (t: (typeof successStories)[number], key: number) => (
+    <div
+      key={key}
+      className="flex flex-col gap-[20px] p-[20px] shrink-0"
+      style={{ width: cardWidth, backgroundColor: "var(--color-white)", borderRadius: 12 }}
+    >
+      <img src={t.image} alt={t.name} className="object-cover" style={{ borderRadius: 12, width: 166, height: 166 }} />
+      <div className="flex flex-col gap-[16px]">
+        <Stars />
+        <p className="heading-4b" style={{ color: "var(--color-black)" }}>{t.quote}</p>
+        <div className="flex flex-col gap-[4px]">
+          <span className="heading-4b" style={{ color: "var(--color-black)" }}>{t.name}</span>
+          <span className="body-16-regular" style={{ color: "#464646" }}>{t.location}</span>
+        </div>
+      </div>
+    </div>
+  );
 
   return (
-    <section
-      ref={ref}
-      className="w-full flex flex-col pt-[60px] px-[20px] pb-[60px] tablet:pt-[80px] tablet:px-[30px] tablet:pb-[80px] desktop:pt-[150px] desktop:px-[30px] desktop:pb-[150px]"
-      style={{ backgroundColor: "var(--color-soft-white)" }}
-    >
-      {/* Header */}
-      <div
-        className="w-full max-w-[1296px] mx-auto flex flex-col gap-[24px]"
-        style={{
-          opacity: visible ? 1 : 0,
-          transform: visible ? "translateY(0px)" : "translateY(30px)",
-          transition: SPRING,
-        }}
-      >
-        <div className="flex flex-row justify-start items-center gap-[16px]">
-          <Image src="/leaf-icon.svg" alt="" width={20} height={20} style={{ flexShrink: 0 }} />
-          <span className="body-16-regular">Success Stories</span>
-        </div>
-        <div style={{ width: "100%", height: 1, backgroundColor: "var(--color-light-gray)" }} />
-        <h2 className="heading-1b tablet:max-w-[826px]" style={{ color: "var(--color-near-black)" }}>Happy Client Stories.</h2>
-        <Link
-          href="/success-stories"
-          className="cta-link inline-flex items-center gap-[8px] no-underline"
-          onMouseEnter={() => setCtaHovered(true)}
-          onMouseLeave={() => setCtaHovered(false)}
-          style={{ color: "var(--color-dark-gray)", transition: "color 0.6s cubic-bezier(0.44, 0, 0.56, 1)" }}
-        >
-          <span style={{ fontFamily: "var(--font-sans)", fontWeight: 500, fontSize: "24px", letterSpacing: "-0.01em", lineHeight: 1 }}>[</span>
-          <span className="body-16-regular" style={{ color: "var(--color-dark-gray)" }}>MORE STORIES</span>
-          <span aria-hidden="true" style={{ display: "inline-block", position: "relative", width: 20, height: 20, overflow: "hidden", flexShrink: 0 }}>
-            <span style={{ position: "absolute", inset: 0, display: "flex", transition: ARROW_TRANSITION, transform: ctaHovered ? "translate(110%, -110%)" : "translate(0, 0)" }}>
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M 15 0 L 15 10.5 L 13.637 10.5 L 13.637 2.5 L 1.5 15.5 L 0 14.088 L 12.5 1.5 L 3.729 1.5 L 3.729 0 Z" fill="currentColor" transform="translate(2.363 2.5)" />
-              </svg>
-            </span>
-            <span style={{ position: "absolute", inset: 0, display: "flex", transition: ARROW_TRANSITION, transform: ctaHovered ? "translate(0, 0)" : "translate(-110%, 110%)" }}>
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M 15 0 L 15 10.5 L 13.637 10.5 L 13.637 2.5 L 1.5 15.5 L 0 14.088 L 12.5 1.5 L 3.729 1.5 L 3.729 0 Z" fill="currentColor" transform="translate(2.363 2.5)" />
-              </svg>
-            </span>
-          </span>
-          <span style={{ fontFamily: "var(--font-sans)", fontWeight: 500, fontSize: "24px", letterSpacing: "-0.01em", lineHeight: 1 }}>]</span>
-        </Link>
-      </div>
+    <section ref={ref} className="w-full" style={{ backgroundColor: "var(--color-soft-white)" }}>
+      {/* Horizontal scroll tied to the section passing through the viewport — all breakpoints */}
+      <div ref={sectionRef}>
+        <div ref={stickyRef} className="py-[60px] tablet:py-[80px] desktop:py-[120px]">
+          <div className="max-w-[1296px] mx-auto px-[20px] tablet:px-[30px] flex flex-col gap-[24px] desktop:gap-[40px]">
+            {header}
 
-      {/* Cards */}
-      <div
-        className="w-full max-w-[1296px] mx-auto mt-[40px] tablet:mt-[60px] desktop:mt-[72px]"
-        style={{
-          opacity: visible ? 1 : 0,
-          transform: visible ? "translateY(0px)" : "translateY(30px)",
-          transition: SPRING,
-        }}
-      >
-        {/* Mobile + Tablet: stacked */}
-        <div className="flex flex-col gap-[24px] tablet:hidden">
-          {/* Big card — vertical on mobile, horizontal on tablet+ */}
-          <div className="flex flex-col tablet:flex-row gap-[20px] items-start" style={{ backgroundColor: "var(--color-white)", borderRadius: 12, padding: "66px 30px" }}>
-            <div className="flex-shrink-0">
-              <img src={successStories[0].image} alt={successStories[0].name} className="object-cover tablet:max-w-[166px]" style={{ width: 166, height: 166, borderRadius: 12 }} />
-            </div>
-            <div className="flex flex-col gap-[25px]">
-              <Stars />
-              <p className="heading-4b" style={{ color: "var(--color-black)" }}>{successStories[0].quote}</p>
-              <div className="flex flex-col gap-[4px]">
-                <span className="heading-4b" style={{ color: "var(--color-black)" }}>{successStories[0].name}</span>
-                <span className="body-16-regular" style={{ color: "#464646" }}>{successStories[0].location}</span>
+            <div ref={clipRef} className="overflow-hidden">
+              <div
+                className="flex items-stretch"
+                style={{
+                  gap: CARD_GAP,
+                  transform: `translateX(${translate}px)`,
+                  willChange: "transform",
+                }}
+              >
+                {successStories.map((t, i) => (isMobile ? smallCard(t, i) : bigCard(t, i)))}
               </div>
             </div>
-          </div>
-
-          {/* Small cards — vertical (same as desktop) */}
-          {[successStories[1], successStories[2]].map((t, i) => (
-            <div key={i} className="flex flex-col gap-[20px] p-[20px]" style={{ backgroundColor: "var(--color-white)", borderRadius: 12 }}>
-              <img src={t.image} alt={t.name} className="object-cover" style={{ borderRadius: 12, width: 166, height: 166 }} />
-              <div className="flex flex-col gap-[20px]">
-                <Stars />
-                <p className="heading-4b" style={{ color: "var(--color-black)" }}>{t.quote}</p>
-                <div className="flex flex-col gap-[4px]">
-                  <span className="heading-4b" style={{ color: "var(--color-black)" }}>{t.name}</span>
-                  <span className="body-16-regular" style={{ color: "#464646" }}>{t.location}</span>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Tablet: 3 small cards in a row */}
-        <div className="hidden tablet:flex desktop:hidden gap-[24px]">
-          {successStories.map((t, i) => (
-            <div key={i} className="flex flex-col gap-[20px] p-[20px]" style={{ flex: 1, backgroundColor: "var(--color-white)", borderRadius: 12 }}>
-              <img src={t.image} alt={t.name} className="object-cover" style={{ borderRadius: 12, width: 166, height: 166 }} />
-              <div className="flex flex-col gap-[20px]">
-                <Stars />
-                <p className="heading-4b" style={{ color: "var(--color-black)" }}>{t.quote}</p>
-                <div className="flex flex-col gap-[4px]">
-                  <span className="heading-4b" style={{ color: "var(--color-black)" }}>{t.name}</span>
-                  <span className="body-16-regular" style={{ color: "#464646" }}>{t.location}</span>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Desktop: left col (big card + stat card) + right col (two small cards) */}
-        <div className="hidden desktop:flex gap-x-[24px] gap-y-[24px]">
-          {/* Left column */}
-          <div className="flex flex-col gap-[24px]" style={{ flex: "636 0 0px" }}>
-            {/* Big card */}
-            <div className="flex flex-row gap-[20px] items-start" style={{ backgroundColor: "var(--color-white)", borderRadius: 12, padding: "66px 30px" }}>
-              <div className="flex-shrink-0">
-                <img src={successStories[0].image} alt={successStories[0].name} className="object-cover" style={{ width: 166, height: 166, maxWidth: 166, borderRadius: 12 }} />
-              </div>
-              <div className="flex flex-col gap-[25px]">
-                <Stars />
-                <p className="heading-4b" style={{ color: "var(--color-black)" }}>{successStories[0].quote}</p>
-                <div className="flex flex-col gap-[4px]">
-                  <span className="heading-4b" style={{ color: "var(--color-black)" }}>{successStories[0].name}</span>
-                  <span className="body-16-regular" style={{ color: "#464646" }}>{successStories[0].location}</span>
-                </div>
-              </div>
-            </div>
-            {/* Stat card */}
-            <div className="flex flex-col gap-[6px] p-[30px]" style={{ flex: 1, backgroundColor: "var(--color-white)", borderRadius: 12 }}>
-              <Stars />
-              <div className="flex flex-col gap-[6px]">
-                <span className="heading-2b" style={{ color: "var(--color-near-black)" }}>
-                  {count >= 2000 ? "2M+" : `${(count / 1000).toFixed(1)}M+`}
-                </span>
-                <span className="body-16-regular" style={{ color: "#464646" }}>Happy Customers</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Right column — two small cards side by side */}
-          <div className="flex flex-row gap-[24px]" style={{ flex: "700 0 0px", alignSelf: "stretch" }}>
-            {[successStories[1], successStories[2]].map((t, i) => (
-              <div key={i} className="flex flex-col gap-[20px] p-[20px]" style={{ flex: 1, alignSelf: "stretch", backgroundColor: "var(--color-white)", borderRadius: 12 }}>
-                <div>
-                  <img src={t.image} alt={t.name} className="object-cover" style={{ borderRadius: 12, width: 166, height: 166 }} />
-                </div>
-                <div className="flex flex-col gap-[20px]">
-                  <Stars />
-                  <p className="heading-4b" style={{ color: "var(--color-black)" }}>{t.quote}</p>
-                  <div className="flex flex-col gap-[4px]">
-                    <span className="heading-4b" style={{ color: "var(--color-black)" }}>{t.name}</span>
-                    <span className="body-16-regular" style={{ color: "#464646" }}>{t.location}</span>
-                  </div>
-                </div>
-              </div>
-            ))}
           </div>
         </div>
       </div>

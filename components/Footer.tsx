@@ -159,7 +159,7 @@ export default function Footer() {
 
         {/* Editorial CTA */}
         <div
-          className="flex flex-col items-center text-center gap-[24px] tablet:flex-row tablet:items-end tablet:justify-between tablet:text-left mt-[40px] tablet:mt-[60px] desktop:mt-[87px] p-[24px] tablet:p-[40px] desktop:p-[56px]"
+          className="flex flex-col items-center text-center gap-[24px] mt-[40px] tablet:mt-[60px] desktop:mt-[87px] p-[24px] tablet:p-[40px] desktop:p-[56px]"
           style={{ backgroundColor: "var(--color-mint-green)", borderRadius: "12px" }}
         >
           <h2

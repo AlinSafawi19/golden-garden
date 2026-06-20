@@ -133,7 +133,7 @@ export default function Footer() {
             style={{ color: "var(--color-dark-teal)" }}
           >
             Let&apos;s grow something{" "}
-            <em style={{ color: "var(--color-coral)", fontStyle: "italic" }}>beautiful.</em>
+            <em style={{ fontStyle: "italic" }}>beautiful.</em>
           </h2>
           <Link
             href="/contact"

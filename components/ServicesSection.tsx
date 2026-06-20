@@ -102,12 +102,12 @@ export default function ServicesSection() {
         {services.map((s, i) => (
           <div key={i} className={`w-full max-w-[1296px] mx-auto flex flex-col gap-[30px] tablet:flex-row tablet:justify-between tablet:gap-[40px]${i === 1 ? " tablet:flex-row-reverse" : ""}`}>
             <div
-              className="bg-white flex flex-col justify-between items-start w-full h-[250px] tablet:w-[450px] tablet:h-[290px] tablet:shrink-0"
+              className="bg-white flex flex-col justify-between items-start gap-[24px] tablet:gap-0 w-full h-auto tablet:w-[450px] tablet:h-[290px] tablet:shrink-0"
               style={{ opacity: visible ? 1 : 0, transform: visible ? "translateY(0px)" : "translateY(30px)", transition: SPRING }}
             >
               <span className="heading-2c" style={{ color: "var(--color-near-black)" }}>{s.num}</span>
               <div className="flex flex-col gap-[24px]">
-                <div className="flex flex-row items-center gap-[20px]">
+                <div className="flex flex-row items-center gap-[15px] tablet:gap-[20px]">
                   <Image src="/leaf-icon.svg" alt="" width={20} height={22} style={{ flexShrink: 0 }} />
                   <span className="heading-2b" style={{ color: "var(--color-near-black)" }}>{s.title}</span>
                 </div>

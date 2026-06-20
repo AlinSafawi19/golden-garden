@@ -13,10 +13,11 @@ export default function ProjectDetailsHero({ name }: { name: string }) {
       <div className="flex gap-[10px] justify-end">
         <div className="max-w-[526px] flex flex-col gap-[10px]">
           <p className="body-20-regular-3" style={{ color: "#464646" }}>
-            Explore the details behind each project, showcasing our design
-            approach, craftsmanship, and thoughtful execution. See how every
-            element comes together to create a beautiful and functional
-            outdoor space.
+            A complete transformation of an outdoor space into a living garden
+            retreat. From the first concept sketches to the final planting, this
+            project blends thoughtful design, quality craftsmanship, and
+            sustainable practices to create an environment that feels both
+            curated and effortlessly natural.
           </p>
 
           {/* Breadcrumb */}

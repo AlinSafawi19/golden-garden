@@ -19,9 +19,28 @@ const galleryImages = [
   "https://framerusercontent.com/images/QG4yJCnyB7EbPwfi6Hib3zrVFg4.png?width=632&height=548",
 ];
 
+const accordionItems = [
+  {
+    number: "01",
+    title: "Concept & Vision",
+    body: "Bloom Heaven was envisioned as a vibrant and serene outdoor space where natural beauty meets thoughtful design. The goal was to create a garden that feels alive with color, texture, and seasonal blooms while offering a peaceful retreat from everyday life. By blending floral arrangements with open green areas, the project brings together relaxation and visual harmony in a truly inviting environment.",
+  },
+  {
+    number: "02",
+    title: "Design & Execution",
+    body: "The design phase focused on balancing structure and softness, pairing clean architectural lines with layered planting schemes. Every element — from pathways to focal beds — was carefully placed to guide movement and frame views. Execution emphasized quality materials and sustainable practices, ensuring the garden would mature gracefully over the seasons.",
+  },
+  {
+    number: "03",
+    title: "Result & Experience",
+    body: "The finished garden delivers an immersive sensory experience, where color, fragrance, and form change throughout the year. Visitors are met with intimate seating nooks, sweeping floral displays, and quiet corners for reflection. The result is a living space that feels both curated and effortlessly natural — a lasting retreat that rewards every return visit.",
+  },
+];
+
 export default function ProjectDetailsContent() {
   const [hovered, setHovered] = useState<string | null>(null);
   const [openSrc, setOpenSrc] = useState<string | null>(null);
+  const [openItem, setOpenItem] = useState(0);
 
   const imgStyle = (key: string) => ({
     width: "100%",
@@ -50,17 +69,72 @@ export default function ProjectDetailsContent() {
       </div>
 
       {/* Feature image */}
-      <div
-        style={{ borderRadius: 12, overflow: "hidden", aspectRatio: "16/9", cursor: "zoom-in" }}
-        onMouseEnter={() => setHovered("feature")}
-        onMouseLeave={() => setHovered(null)}
-        onClick={() => setOpenSrc("https://framerusercontent.com/images/HTojjv0KgmKSLldV2quyEE9fk94.png?width=834&height=468")}
-      >
+      <div style={{ borderRadius: 12, overflow: "hidden", aspectRatio: "16/9" }}>
         <img
           src="https://framerusercontent.com/images/HTojjv0KgmKSLldV2quyEE9fk94.png?width=834&height=468"
           alt="Project feature"
-          style={imgStyle("feature")}
+          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
         />
+      </div>
+
+      {/* Accordion */}
+      <div>
+        {accordionItems.map((item, i) => {
+          const isOpen = openItem === i;
+          return (
+            <div
+              key={item.number}
+              onClick={() => setOpenItem(isOpen ? -1 : i)}
+              role="button"
+              tabIndex={0}
+              aria-expanded={isOpen}
+              style={{ borderBottom: "1px solid #D4D4D4", cursor: "pointer" }}
+            >
+              <div
+                className="flex w-full items-center justify-between gap-[20px] text-left"
+                style={{
+                  padding: "52px 32px",
+                  opacity: isOpen ? 1 : 0.4,
+                  transition: "opacity 0.4s cubic-bezier(0.44, 0, 0.56, 1)",
+                }}
+              >
+                <span className="flex items-baseline gap-[10px]">
+                  <span className="heading-4b" style={{ color: "var(--color-near-black)" }}>
+                    {item.number}
+                  </span>
+                  <span className="heading-4b" style={{ color: "var(--color-near-black)" }}>
+                    {item.title}
+                  </span>
+                </span>
+                <img
+                  aria-hidden
+                  src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 xmlns:xlink=%22http://www.w3.org/1999/xlink%22 viewBox=%220 0 16 17%22><path d=%22M 7.059 0.5 L 7.059 7.559 L 0 7.559 L 0 8.971 L 7.059 8.971 L 7.059 16.029 L 8.471 16.029 L 8.471 8.971 L 15.529 8.971 L 15.529 7.559 L 8.471 7.559 L 8.471 0.5 Z%22 fill=%22rgb(18, 18, 18)%22></path></svg>'
+                  alt=""
+                  style={{
+                    flexShrink: 0,
+                    width: 16,
+                    height: 17,
+                    transform: `rotate(${isOpen ? 45 : 0}deg)`,
+                    transition: "transform 0.4s cubic-bezier(0.44, 0, 0.56, 1)",
+                  }}
+                />
+              </div>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateRows: isOpen ? "1fr" : "0fr",
+                  transition: "grid-template-rows 0.4s cubic-bezier(0.44, 0, 0.56, 1)",
+                }}
+              >
+                <div style={{ overflow: "hidden" }}>
+                  <p className="body-16-regular-2 px-[32px] pb-[52px] tablet:pr-[80px]" style={{ color: "#464646", opacity: 0.7 }}>
+                    {item.body}
+                  </p>
+                </div>
+              </div>
+            </div>
+          );
+        })}
       </div>
 
       {/* Gallery — left/right on desktop, stacked (right on top) on mobile */}

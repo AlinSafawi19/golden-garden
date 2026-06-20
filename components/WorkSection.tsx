@@ -225,7 +225,7 @@ export default function WorkSection() {
         <div
           id="work-scroll-content"
           className="w-full max-w-[1296px] mx-auto hidden desktop:block"
-          style={{ height: "100vh", transform: "translateY(0px)" }}
+          style={{ height: "100vh", transform: "translateY(0px)", pointerEvents: "none" }}
         />
       </div>}
     </section>

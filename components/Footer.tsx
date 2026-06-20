@@ -131,7 +131,9 @@ export default function Footer() {
         <div className="flex flex-col gap-[40px] tablet:gap-[60px] desktop:gap-[87px]">
 
           {/* Logo */}
-          <Logo tone="onDark" symbolSize={48} />
+          <Link href="/" className="no-underline hover:no-underline outline-none focus:outline-none w-fit" aria-label="Go to home">
+            <Logo tone="onDark" symbolSize={48} />
+          </Link>
 
           {/* Mobile: nav 2-col grid, then contact 1-col — separate stacks */}
           <div className="flex flex-col gap-[41px] tablet:hidden">

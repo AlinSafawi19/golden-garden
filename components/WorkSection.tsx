@@ -6,6 +6,13 @@ import Link from "next/link";
 const ARROW_TRANSITION = "transform 0.6s cubic-bezier(0.76, 0, 0.24, 1)";
 const IMG_HOVER = "transform 0.7s cubic-bezier(0.34, 1.1, 0.64, 1)";
 
+const slugify = (s: string) =>
+  s
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
 const cards = [
   {
     src: "https://framerusercontent.com/images/HTojjv0KgmKSLldV2quyEE9fk94.png?width=834&height=468",
@@ -38,7 +45,7 @@ type CenterOffsets = {
 
 export default function WorkSection() {
   const sectionRef = useRef<HTMLElement>(null);
-  const cardContentRef = useRef<HTMLDivElement>(null);
+  const cardContentRef = useRef<HTMLAnchorElement>(null);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [centerOffsets, setCenterOffsets] = useState<CenterOffsets | null>(null);
   const [ctaHovered, setCtaHovered] = useState(false);
@@ -156,9 +163,10 @@ export default function WorkSection() {
         </div>
         <div className="flex flex-col gap-[32px]">
           {cards.map((card, i) => (
-            <div
+            <Link
               key={card.alt}
-              className="flex flex-col gap-[16px]"
+              href={`/projects/${slugify(card.label)}`}
+              className="flex flex-col gap-[16px] no-underline"
               style={{ cursor: "pointer" }}
               onMouseEnter={() => setHoveredCard(i)}
               onMouseLeave={() => setHoveredCard(null)}
@@ -171,7 +179,7 @@ export default function WorkSection() {
                 />
               </div>
               <h3 className="heading-3" style={{ color: "#ffffff", textAlign: "center" }}>{card.label}</h3>
-            </div>
+            </Link>
           ))}
         </div>
       </div>
@@ -204,12 +212,12 @@ export default function WorkSection() {
               willChange: "transform",
             }}
           >
-            <div ref={cardContentRef} className="flex flex-col gap-[16px]" style={{ backgroundColor: "var(--color-dark-teal)", borderRadius: 12, cursor: "pointer" }} onMouseEnter={() => setHoveredCard(0)} onMouseLeave={() => setHoveredCard(null)}>
+            <Link ref={cardContentRef} href={`/projects/${slugify(cards[0].label)}`} className="flex flex-col gap-[16px] no-underline" style={{ backgroundColor: "var(--color-dark-teal)", borderRadius: 12, cursor: "pointer" }} onMouseEnter={() => setHoveredCard(0)} onMouseLeave={() => setHoveredCard(null)}>
               <div style={{ height: isDesktop ? 220 : 160, borderRadius: 12, overflow: "hidden" }}>
                 <img src={cards[0].src} alt={cards[0].alt} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", transition: IMG_HOVER, transform: hoveredCard === 0 ? "scale(1.1)" : "scale(1)" }} />
               </div>
               <h3 className="heading-3" style={{ color: "#ffffff", textAlign: "center", paddingBottom: 16 }}>{cards[0].label}</h3>
-            </div>
+            </Link>
           </div>
 
           {/* Floral Escape — top right */}
@@ -223,12 +231,12 @@ export default function WorkSection() {
               willChange: "transform",
             }}
           >
-            <div className="flex flex-col gap-[16px]" style={{ backgroundColor: "var(--color-dark-teal)", borderRadius: 12, cursor: "pointer" }} onMouseEnter={() => setHoveredCard(1)} onMouseLeave={() => setHoveredCard(null)}>
+            <Link href={`/projects/${slugify(cards[1].label)}`} className="flex flex-col gap-[16px] no-underline" style={{ backgroundColor: "var(--color-dark-teal)", borderRadius: 12, cursor: "pointer" }} onMouseEnter={() => setHoveredCard(1)} onMouseLeave={() => setHoveredCard(null)}>
               <div style={{ height: isDesktop ? 220 : 160, borderRadius: 12, overflow: "hidden" }}>
                 <img src={cards[1].src} alt={cards[1].alt} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", transition: IMG_HOVER, transform: hoveredCard === 1 ? "scale(1.1)" : "scale(1)" }} />
               </div>
               <h3 className="heading-3" style={{ color: "#ffffff", textAlign: "center", paddingBottom: 16 }}>{cards[1].label}</h3>
-            </div>
+            </Link>
           </div>
 
           {/* Vegetable Garden — bottom left */}
@@ -242,12 +250,12 @@ export default function WorkSection() {
               willChange: "transform",
             }}
           >
-            <div className="flex flex-col gap-[16px]" style={{ backgroundColor: "var(--color-dark-teal)", borderRadius: 12, cursor: "pointer" }} onMouseEnter={() => setHoveredCard(2)} onMouseLeave={() => setHoveredCard(null)}>
+            <Link href={`/projects/${slugify(cards[2].label)}`} className="flex flex-col gap-[16px] no-underline" style={{ backgroundColor: "var(--color-dark-teal)", borderRadius: 12, cursor: "pointer" }} onMouseEnter={() => setHoveredCard(2)} onMouseLeave={() => setHoveredCard(null)}>
               <div style={{ height: isDesktop ? 220 : 160, borderRadius: 12, overflow: "hidden" }}>
                 <img src={cards[2].src} alt={cards[2].alt} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", transition: IMG_HOVER, transform: hoveredCard === 2 ? "scale(1.1)" : "scale(1)" }} />
               </div>
               <h3 className="heading-3" style={{ color: "#ffffff", textAlign: "center", paddingBottom: 16 }}>{cards[2].label}</h3>
-            </div>
+            </Link>
           </div>
 
           {/* Boom Heaven — bottom right */}
@@ -261,12 +269,12 @@ export default function WorkSection() {
               willChange: "transform",
             }}
           >
-            <div className="flex flex-col gap-[16px]" style={{ backgroundColor: "var(--color-dark-teal)", borderRadius: 12, cursor: "pointer" }} onMouseEnter={() => setHoveredCard(3)} onMouseLeave={() => setHoveredCard(null)}>
+            <Link href={`/projects/${slugify(cards[3].label)}`} className="flex flex-col gap-[16px] no-underline" style={{ backgroundColor: "var(--color-dark-teal)", borderRadius: 12, cursor: "pointer" }} onMouseEnter={() => setHoveredCard(3)} onMouseLeave={() => setHoveredCard(null)}>
               <div style={{ height: isDesktop ? 220 : 160, borderRadius: 12, overflow: "hidden" }}>
                 <img src={cards[3].src} alt={cards[3].alt} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", transition: IMG_HOVER, transform: hoveredCard === 3 ? "scale(1.1)" : "scale(1)" }} />
               </div>
               <h3 className="heading-3" style={{ color: "#ffffff", textAlign: "center", paddingBottom: 16 }}>{cards[3].label}</h3>
-            </div>
+            </Link>
           </div>
         </div>
 

@@ -10,6 +10,7 @@ const navColumns: { title: string; links: NavLink[] }[] = [
       { title: "Home", href: "/" },
       { title: "Services", href: "/services" },
       { title: "Projects", href: "/projects" },
+      { title: "Success Stories", href: "/success-stories" },
     ],
   },
   {

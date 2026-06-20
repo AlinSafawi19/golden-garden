@@ -4,7 +4,7 @@ import TickerSection from "@/components/TickerSection";
 import ServicesSection from "@/components/ServicesSection";
 import WhyChooseUsSection from "@/components/WhyChooseUsSection";
 import WorkSection from "@/components/WorkSection";
-import TestimonialsSection from "@/components/TestimonialsSection";
+import SuccessStoriesSection from "@/components/SuccessStoriesSection";
 
 export default function Home() {
   return (
@@ -15,7 +15,7 @@ export default function Home() {
       <ServicesSection />
       <WhyChooseUsSection />
       <WorkSection />
-      <TestimonialsSection />
+      <SuccessStoriesSection />
     </>
   );
 }

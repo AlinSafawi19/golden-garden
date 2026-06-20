@@ -14,6 +14,7 @@ const navItems: NavItem[] = [
   { title: "About Us", href: "/about" },
   { title: "Services", href: "/services" },
   { title: "Projects", href: "/projects" },
+  { title: "Success Stories", href: "/success-stories" },
 ];
 
 export default function Navbar() {

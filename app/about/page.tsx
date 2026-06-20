@@ -4,7 +4,7 @@ import TickerSection from "@/components/TickerSection";
 
 export default function AboutPage() {
   return (
-    <div className="pb-[60px] tablet:pb-[80px] desktop:pb-[100px]">
+    <div className="pb-[60px] tablet:pb-[80px] desktop:pb-[100px] bg-[var(--color-white)]">
       <AboutHero />
       <AboutSection />
       <TickerSection />

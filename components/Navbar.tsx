@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 import RollingText from "@/components/RollingText";
 
@@ -20,6 +21,11 @@ const navItems: NavItem[] = [
 const PRIMARY_COUNT = 3;
 
 export default function Navbar() {
+  const pathname = usePathname();
+  const overlayBg =
+    pathname === "/success-stories"
+      ? "var(--color-white)"
+      : "var(--color-off-white)";
   const [mobileOpen, setMobileOpen] = useState(false);
   const [ctaHovered, setCtaHovered] = useState(false);
   const [mobileCta, setMobileCta] = useState(false);
@@ -157,8 +163,9 @@ export default function Navbar() {
 
             {/* Dropdown */}
             <div
-              className="fixed z-50 overflow-hidden bg-[var(--color-off-white)]"
+              className="fixed z-50 overflow-hidden"
               style={{
+                backgroundColor: overlayBg,
                 top: dropdownPos.top,
                 left: dropdownPos.left,
                 minWidth: 200,
@@ -216,8 +223,9 @@ export default function Navbar() {
 
       {/* Mobile Dropdown — spring-approximated with max-height */}
       <div
-        className="absolute top-full left-0 right-0 z-50 overflow-hidden bg-[var(--color-off-white)]"
+        className="absolute top-full left-0 right-0 z-50 overflow-hidden"
         style={{
+          backgroundColor: overlayBg,
           maxHeight: mobileOpen ? "400px" : "0px",
           opacity: mobileOpen ? 1 : 0,
           transition:

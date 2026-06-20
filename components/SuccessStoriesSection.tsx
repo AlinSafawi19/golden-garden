@@ -274,7 +274,7 @@ export default function SuccessStoriesSection() {
         transition: SPRING_REVEAL,
       }}
     >
-      <div style={{ width: "100%", height: 1, backgroundColor: "var(--color-light-gray)" }} />
+      <div style={{ width: "100%", height: 1, background: "linear-gradient(to right, var(--color-light-gray), transparent)" }} />
       <h2 className="heading-1b tablet:max-w-[826px]" style={{ color: "var(--color-near-black)" }}>Happy Client Stories.</h2>
       <div className="hidden tablet:block">{moreStoriesLink}</div>
     </div>

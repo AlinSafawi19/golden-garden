@@ -94,6 +94,9 @@ export default function ServicesSection() {
           </div>
         </div>
 
+        {/* Divider — mobile only */}
+        <div className="tablet:hidden" style={{ width: "100%", height: 1, background: "linear-gradient(to right, var(--color-light-gray), transparent)" }} />
+
         {/* Right — title + CTA (CTA moves below the cards on mobile) */}
         <div className="flex flex-col gap-[24px] desktop:max-w-[631px]">
           <h2 className="heading-1b" style={{ color: "var(--color-near-black)" }}>OUR SERVICES</h2>

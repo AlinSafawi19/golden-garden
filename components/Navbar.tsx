@@ -79,7 +79,7 @@ export default function Navbar() {
       }}
     >
       {/* Content — space-between, center-aligned, overflow clip */}
-      <div className="w-full max-w-[1296px] mx-auto flex flex-row justify-between items-center py-[16px] px-[20px]">
+      <div className="w-full max-w-[1296px] mx-auto flex flex-row justify-between items-center py-[8px] px-[20px]">
 
         {/* Logo Wrap */}
         <div className="flex flex-row items-center w-full justify-between tablet:w-auto tablet:justify-start tablet:gap-[10px]">

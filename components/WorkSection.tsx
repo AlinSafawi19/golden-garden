@@ -179,7 +179,8 @@ export default function WorkSection() {
       {/* Tablet+ layout */}
       {!isMobile && <div>
         <div
-          className="relative desktop:sticky max-w-[1296px] mx-auto desktop:top-0 w-full h-screen flex flex-col justify-center items-center overflow-hidden"
+          className="relative desktop:sticky max-w-[1296px] mx-auto desktop:top-0 w-full flex flex-col justify-center items-center overflow-hidden"
+          style={{ height: isDesktop ? "100vh" : "max(100vh, 720px)" }}
         >
           {/* Center text — scales in as cards spread out */}
           <div

@@ -15,7 +15,6 @@ const navItems: NavItem[] = [
   { title: "Services", href: "/services" },
   { title: "Projects", href: "/projects" },
   { title: "Success Stories", href: "/success-stories" },
-  { title: "Blog", href: "/blog" },
 ];
 
 const PRIMARY_COUNT = 3;
@@ -198,7 +197,7 @@ export default function Navbar() {
           }}
         >
           <span style={{ fontFamily: "var(--font-sans)", fontWeight: 500, fontSize: "24px", letterSpacing: "-0.01em", lineHeight: 1 }}>[</span>
-          <span className="body-16-regular" style={{ color: "var(--color-dark-gray)" }}>Get a Quote</span>
+          <span className="body-16-regular" style={{ color: "var(--color-dark-gray)" }}>Plan My Garden</span>
           <span aria-hidden="true" style={{ display: "inline-block", position: "relative", width: 20, height: 20, overflow: "hidden", flexShrink: 0 }}>
             <span style={{ position: "absolute", inset: 0, display: "flex", transition: "transform 0.6s cubic-bezier(0.76, 0, 0.24, 1)", transform: ctaHovered ? "translate(110%, -110%)" : "translate(0, 0)" }}>
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -248,7 +247,7 @@ export default function Navbar() {
             style={{ transition: "color 0.6s cubic-bezier(0.44, 0, 0.56, 1)" }}
           >
             <span style={{ fontFamily: "var(--font-sans)", fontWeight: 500, fontSize: "24px", letterSpacing: "-0.01em", lineHeight: 1 }}>[</span>
-            <span className="body-16-regular" style={{ color: "var(--color-dark-gray)" }}>Get a Quote</span>
+            <span className="body-16-regular" style={{ color: "var(--color-dark-gray)" }}>Plan My Garden</span>
             <span aria-hidden="true" style={{ display: "inline-block", position: "relative", width: 20, height: 20, overflow: "hidden", flexShrink: 0 }}>
               <span style={{ position: "absolute", inset: 0, display: "flex", transition: "transform 0.6s cubic-bezier(0.76, 0, 0.24, 1)", transform: mobileCta ? "translate(110%, -110%)" : "translate(0, 0)" }}>
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">

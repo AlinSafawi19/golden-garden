@@ -22,7 +22,6 @@ const navColumns: { title: string; links: NavLink[] }[] = [
     links: [
       { title: "About Us", href: "/about" },
       { title: "Success Stories", href: "/success-stories" },
-      { title: "Blog", href: "/blog" },
       { title: "Contact", href: "/contact" },
     ],
   },
@@ -144,7 +143,7 @@ export default function Footer() {
             style={{ color: "var(--color-dark-teal)", transition: "color 0.6s cubic-bezier(0.44, 0, 0.56, 1)", flexShrink: 0 }}
           >
             <span style={{ ...bracketStyle, color: "var(--color-dark-teal)" }}>[</span>
-            <span className="body-16-regular" style={{ color: "var(--color-dark-teal)" }}>START A PROJECT</span>
+            <span className="body-16-regular" style={{ color: "var(--color-dark-teal)" }}>START A GARDEN</span>
             <span aria-hidden="true" style={{ display: "inline-block", position: "relative", width: 20, height: 20, overflow: "hidden", flexShrink: 0 }}>
               <span style={{ position: "absolute", inset: 0, display: "flex", transition: ARROW_TRANSITION, transform: ctaHovered ? "translate(110%, -110%)" : "translate(0, 0)" }}>
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">

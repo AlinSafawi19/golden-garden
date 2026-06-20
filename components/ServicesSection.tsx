@@ -109,10 +109,12 @@ export default function ServicesSection() {
               className="bg-white flex flex-col justify-between items-start gap-[24px] tablet:gap-0 w-full h-auto tablet:w-[450px] tablet:h-[290px] tablet:shrink-0"
               style={{ opacity: visible ? 1 : 0, transform: visible ? "translateY(0px)" : "translateY(30px)", transition: SPRING }}
             >
-              <span className="heading-2c" style={{ color: "var(--color-near-black)" }}>{s.num}</span>
+              <div className="flex flex-row items-center gap-[6px]">
+                <Image src="/leaf-icon.svg" alt="" width={58} height={64} className="h-[24px] w-auto tablet:h-[32px] desktop:h-[40px]" style={{ flexShrink: 0 }} />
+                <span className="heading-2c" style={{ color: "var(--color-near-black)" }}>{s.num}</span>
+                </div>
               <div className="flex flex-col gap-[24px]">
                 <div className="flex flex-row items-center gap-[15px] tablet:gap-[20px]">
-                  <Image src="/leaf-icon.svg" alt="" width={20} height={22} style={{ flexShrink: 0 }} />
                   <span className="heading-2b" style={{ color: "var(--color-near-black)" }}>{s.title}</span>
                 </div>
                 <p className="body-16-regular" style={{ color: "#464646" }}>{s.desc}</p>

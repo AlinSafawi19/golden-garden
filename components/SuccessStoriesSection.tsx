@@ -6,6 +6,7 @@ import Link from "next/link";
 
 const SPRING =
   "opacity 0.4s cubic-bezier(0.34, 1.2, 0.64, 1), transform 0.4s cubic-bezier(0.34, 1.2, 0.64, 1)";
+const CARD_HOVER = "transform 0.4s cubic-bezier(0.34, 1.2, 0.64, 1)";
 const ARROW_TRANSITION = "transform 0.6s cubic-bezier(0.76, 0, 0.24, 1)";
 
 const STARS_SRC = "data:image/svg+xml,<svg display='block' role='presentation' viewBox='0 0 20 4' xmlns='http://www.w3.org/2000/svg'><path d='M 1.527 0.188 L 1.756 0.65 C 1.787 0.714 1.871 0.776 1.941 0.788 L 2.356 0.858 C 2.622 0.902 2.684 1.096 2.493 1.288 L 2.17 1.614 C 2.116 1.669 2.086 1.775 2.102 1.851 L 2.195 2.254 C 2.268 2.573 2.1 2.697 1.82 2.53 L 1.431 2.298 C 1.36 2.256 1.245 2.256 1.173 2.298 L 0.784 2.53 C 0.505 2.697 0.336 2.572 0.409 2.254 L 0.501 1.851 C 0.518 1.775 0.488 1.669 0.433 1.614 L 0.111 1.288 C -0.08 1.096 -0.018 0.902 0.247 0.858 L 0.663 0.788 C 0.732 0.776 0.815 0.714 0.846 0.65 L 1.075 0.188 C 1.2 -0.063 1.403 -0.063 1.527 0.188 Z' fill='rgb(251, 191, 55)' stroke='rgb(251, 191, 55)' stroke-width='0.23' stroke-linecap='round' stroke-linejoin='round' transform='translate(0.26 0.695)'/><path d='M 1.527 0.188 L 1.756 0.65 C 1.787 0.714 1.871 0.776 1.941 0.788 L 2.356 0.858 C 2.622 0.902 2.684 1.096 2.493 1.288 L 2.17 1.614 C 2.116 1.669 2.086 1.775 2.102 1.851 L 2.195 2.254 C 2.268 2.573 2.1 2.697 1.82 2.53 L 1.431 2.298 C 1.36 2.256 1.245 2.256 1.173 2.298 L 0.784 2.53 C 0.505 2.697 0.336 2.572 0.409 2.254 L 0.501 1.851 C 0.518 1.775 0.488 1.669 0.433 1.614 L 0.111 1.288 C -0.08 1.096 -0.018 0.902 0.247 0.858 L 0.663 0.788 C 0.732 0.776 0.815 0.714 0.846 0.65 L 1.075 0.188 C 1.2 -0.063 1.403 -0.063 1.527 0.188 Z' fill='rgb(251, 191, 55)' stroke='rgb(251, 191, 55)' stroke-width='0.23' stroke-linecap='round' stroke-linejoin='round' transform='translate(4.479 0.695)'/><path d='M 1.527 0.188 L 1.756 0.65 C 1.787 0.714 1.871 0.776 1.941 0.788 L 2.356 0.858 C 2.622 0.902 2.684 1.096 2.493 1.288 L 2.17 1.614 C 2.116 1.669 2.086 1.775 2.102 1.851 L 2.195 2.254 C 2.268 2.573 2.1 2.697 1.82 2.53 L 1.431 2.298 C 1.36 2.256 1.245 2.256 1.173 2.298 L 0.784 2.53 C 0.505 2.697 0.336 2.572 0.409 2.254 L 0.501 1.851 C 0.518 1.775 0.488 1.669 0.433 1.614 L 0.111 1.288 C -0.08 1.096 -0.018 0.902 0.247 0.858 L 0.663 0.788 C 0.732 0.776 0.815 0.714 0.846 0.65 L 1.075 0.188 C 1.2 -0.063 1.403 -0.063 1.527 0.188 Z' fill='rgb(251, 191, 55)' stroke='rgb(251, 191, 55)' stroke-width='0.23' stroke-linecap='round' stroke-linejoin='round' transform='translate(8.698 0.695)'/><path d='M 1.527 0.188 L 1.756 0.65 C 1.787 0.714 1.871 0.776 1.941 0.788 L 2.356 0.858 C 2.622 0.902 2.684 1.096 2.493 1.288 L 2.17 1.614 C 2.116 1.669 2.086 1.775 2.102 1.851 L 2.195 2.254 C 2.268 2.573 2.1 2.697 1.82 2.53 L 1.431 2.298 C 1.36 2.256 1.245 2.256 1.173 2.298 L 0.784 2.53 C 0.505 2.697 0.336 2.572 0.409 2.254 L 0.501 1.851 C 0.518 1.775 0.488 1.669 0.433 1.614 L 0.111 1.288 C -0.08 1.096 -0.018 0.902 0.247 0.858 L 0.663 0.788 C 0.732 0.776 0.815 0.714 0.846 0.65 L 1.075 0.188 C 1.2 -0.063 1.403 -0.063 1.527 0.188 Z' fill='rgb(251, 191, 55)' stroke='rgb(251, 191, 55)' stroke-width='0.23' stroke-linecap='round' stroke-linejoin='round' transform='translate(12.917 0.695)'/><path d='M 1.527 0.188 L 1.756 0.65 C 1.787 0.714 1.871 0.776 1.941 0.788 L 2.356 0.858 C 2.622 0.902 2.684 1.096 2.493 1.288 L 2.17 1.614 C 2.115 1.669 2.085 1.775 2.103 1.851 L 2.195 2.254 C 2.268 2.573 2.1 2.697 1.82 2.53 L 1.431 2.298 C 1.36 2.256 1.245 2.256 1.173 2.298 L 0.784 2.53 C 0.505 2.697 0.336 2.572 0.409 2.254 L 0.501 1.851 C 0.518 1.775 0.488 1.669 0.433 1.614 L 0.11 1.288 C -0.08 1.096 -0.018 0.902 0.247 0.858 L 0.663 0.788 C 0.732 0.776 0.815 0.714 0.846 0.65 L 1.075 0.188 C 1.2 -0.063 1.403 -0.063 1.527 0.188 Z' fill='rgb(251, 191, 55)' stroke='rgb(251, 191, 55)' stroke-width='0.23' stroke-linecap='round' stroke-linejoin='round' transform='translate(17.135 0.695)'/></svg>";
@@ -41,6 +42,7 @@ export default function SuccessStoriesSection() {
   const [visible, setVisible] = useState(false);
   const [count, setCount] = useState(0);
   const [ctaHovered, setCtaHovered] = useState(false);
+  const [hoveredStory, setHoveredStory] = useState<number | null>(null);
 
   useEffect(() => {
     const el = ref.current;
@@ -132,7 +134,7 @@ export default function SuccessStoriesSection() {
         {/* Mobile + Tablet: stacked */}
         <div className="flex flex-col gap-[24px] tablet:hidden">
           {/* Big card — vertical on mobile, horizontal on tablet+ */}
-          <div className="flex flex-col tablet:flex-row gap-[20px] items-start" style={{ backgroundColor: "var(--color-white)", borderRadius: 12, padding: "66px 30px" }}>
+          <div className="flex flex-col tablet:flex-row gap-[20px] items-start" style={{ backgroundColor: "var(--color-white)", borderRadius: 12, padding: "66px 30px", cursor: "pointer", transition: CARD_HOVER, transform: hoveredStory === 0 ? "scale(1.02)" : "scale(1)" }} onMouseEnter={() => setHoveredStory(0)} onMouseLeave={() => setHoveredStory(null)}>
             <div className="flex-shrink-0">
               <img src={successStories[0].image} alt={successStories[0].name} className="object-cover tablet:max-w-[166px]" style={{ width: 166, height: 166, borderRadius: 12 }} />
             </div>
@@ -148,7 +150,7 @@ export default function SuccessStoriesSection() {
 
           {/* Small cards — vertical (same as desktop) */}
           {[successStories[1], successStories[2]].map((t, i) => (
-            <div key={i} className="flex flex-col gap-[20px] p-[20px]" style={{ backgroundColor: "var(--color-white)", borderRadius: 12 }}>
+            <div key={i} className="flex flex-col gap-[20px] p-[20px]" style={{ backgroundColor: "var(--color-white)", borderRadius: 12, cursor: "pointer", transition: CARD_HOVER, transform: hoveredStory === i + 1 ? "scale(1.02)" : "scale(1)" }} onMouseEnter={() => setHoveredStory(i + 1)} onMouseLeave={() => setHoveredStory(null)}>
               <img src={t.image} alt={t.name} className="object-cover" style={{ borderRadius: 12, width: 166, height: 166 }} />
               <div className="flex flex-col gap-[20px]">
                 <Stars />
@@ -165,7 +167,7 @@ export default function SuccessStoriesSection() {
         {/* Tablet: 3 small cards in a row */}
         <div className="hidden tablet:flex desktop:hidden gap-[24px]">
           {successStories.map((t, i) => (
-            <div key={i} className="flex flex-col gap-[20px] p-[20px]" style={{ flex: 1, backgroundColor: "var(--color-white)", borderRadius: 12 }}>
+            <div key={i} className="flex flex-col gap-[20px] p-[20px]" style={{ flex: 1, backgroundColor: "var(--color-white)", borderRadius: 12, cursor: "pointer", transition: CARD_HOVER, transform: hoveredStory === i ? "scale(1.02)" : "scale(1)" }} onMouseEnter={() => setHoveredStory(i)} onMouseLeave={() => setHoveredStory(null)}>
               <img src={t.image} alt={t.name} className="object-cover" style={{ borderRadius: 12, width: 166, height: 166 }} />
               <div className="flex flex-col gap-[20px]">
                 <Stars />
@@ -184,7 +186,7 @@ export default function SuccessStoriesSection() {
           {/* Left column */}
           <div className="flex flex-col gap-[24px]" style={{ flex: "636 0 0px" }}>
             {/* Big card */}
-            <div className="flex flex-row gap-[20px] items-start" style={{ backgroundColor: "var(--color-white)", borderRadius: 12, padding: "66px 30px" }}>
+            <div className="flex flex-row gap-[20px] items-start" style={{ backgroundColor: "var(--color-white)", borderRadius: 12, padding: "66px 30px", cursor: "pointer", transition: CARD_HOVER, transform: hoveredStory === 0 ? "scale(1.02)" : "scale(1)" }} onMouseEnter={() => setHoveredStory(0)} onMouseLeave={() => setHoveredStory(null)}>
               <div className="flex-shrink-0">
                 <img src={successStories[0].image} alt={successStories[0].name} className="object-cover" style={{ width: 166, height: 166, maxWidth: 166, borderRadius: 12 }} />
               </div>
@@ -212,7 +214,7 @@ export default function SuccessStoriesSection() {
           {/* Right column — two small cards side by side */}
           <div className="flex flex-row gap-[24px]" style={{ flex: "700 0 0px", alignSelf: "stretch" }}>
             {[successStories[1], successStories[2]].map((t, i) => (
-              <div key={i} className="flex flex-col gap-[20px] p-[20px]" style={{ flex: 1, alignSelf: "stretch", backgroundColor: "var(--color-white)", borderRadius: 12 }}>
+              <div key={i} className="flex flex-col gap-[20px] p-[20px]" style={{ flex: 1, alignSelf: "stretch", backgroundColor: "var(--color-white)", borderRadius: 12, cursor: "pointer", transition: CARD_HOVER, transform: hoveredStory === i + 1 ? "scale(1.02)" : "scale(1)" }} onMouseEnter={() => setHoveredStory(i + 1)} onMouseLeave={() => setHoveredStory(null)}>
                 <div>
                   <img src={t.image} alt={t.name} className="object-cover" style={{ borderRadius: 12, width: 166, height: 166 }} />
                 </div>

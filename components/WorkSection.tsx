@@ -4,10 +4,6 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 
 const ARROW_TRANSITION = "transform 0.6s cubic-bezier(0.76, 0, 0.24, 1)";
-
-const SPRING = "transform 0.6s cubic-bezier(0.22, 1, 0.36, 1)";
-const SPRING_CARD = "transform 0.7s cubic-bezier(0.34, 1.1, 0.64, 1)";
-const SPRING_CARD_2 = "transform 0.8s cubic-bezier(0.25, 1, 0.5, 1)";
 const IMG_HOVER = "transform 0.7s cubic-bezier(0.34, 1.1, 0.64, 1)";
 
 const cards = [
@@ -33,9 +29,18 @@ const cards = [
   },
 ];
 
+type CenterOffsets = {
+  topLeft: [number, number];
+  topRight: [number, number];
+  bottomLeft: [number, number];
+  bottomRight: [number, number];
+};
+
 export default function WorkSection() {
   const sectionRef = useRef<HTMLElement>(null);
-  const [visible, setVisible] = useState(false);
+  const cardContentRef = useRef<HTMLDivElement>(null);
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const [centerOffsets, setCenterOffsets] = useState<CenterOffsets | null>(null);
   const [ctaHovered, setCtaHovered] = useState(false);
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
   const [isDesktop, setIsDesktop] = useState(false);
@@ -58,16 +63,57 @@ export default function WorkSection() {
     };
   }, []);
 
+  // Compute exact offsets so all 4 cards converge to the same center point at p=0
   useEffect(() => {
-    const el = sectionRef.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => { setVisible(entry.isIntersecting); },
-      { threshold: 0.1 }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
+    if (!isDesktop) return;
+    const compute = () => {
+      const section = sectionRef.current;
+      if (!section) return;
+      const cw = Math.min(section.clientWidth, 1296);
+      const vh = window.innerHeight;
+      const cardW = 417;
+      const cardH = cardContentRef.current?.clientHeight ?? 292;
+      const cx = cw / 2;
+      const cy = vh / 2;
+
+      // offset = distance each card's center must move to reach container center
+      const tlX = cx - (30 + cardW / 2);
+      const tlY = cy - (vh * 0.05 + cardH / 2);
+      setCenterOffsets({
+        topLeft:     [tlX,   tlY],
+        topRight:    [-tlX,  tlY],
+        bottomLeft:  [tlX,  -tlY],
+        bottomRight: [-tlX, -tlY],
+      });
+    };
+    compute();
+    window.addEventListener("resize", compute);
+    return () => window.removeEventListener("resize", compute);
+  }, [isDesktop]);
+
+  // Scroll progress: 0 when section top hits viewport top, 1 after scrolling through spacer
+  useEffect(() => {
+    if (!isDesktop) return;
+    const section = sectionRef.current;
+    if (!section) return;
+    const handleScroll = () => {
+      const rect = section.getBoundingClientRect();
+      const progress = Math.max(0, Math.min(1, -rect.top / window.innerHeight));
+      setScrollProgress(progress);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isDesktop]);
+
+  // Smoothstep easing for natural feel
+  const p = scrollProgress * scrollProgress * (3 - 2 * scrollProgress);
+
+  const cardTransform = (key: keyof CenterOffsets, fallback: [number, number]) => {
+    if (!isDesktop) return "translate(0,0)";
+    const [ox, oy] = centerOffsets?.[key] ?? fallback;
+    return `translate(${ox * (1 - p)}px, ${oy * (1 - p)}px)`;
+  };
 
   const ctaLink = (
     <Link
@@ -135,12 +181,11 @@ export default function WorkSection() {
         <div
           className="relative desktop:sticky max-w-[1296px] mx-auto desktop:top-0 w-full h-screen flex flex-col justify-center items-center overflow-hidden"
         >
-          {/* Center text */}
+          {/* Center text — scales in as cards spread out */}
           <div
             className="flex flex-col gap-[10px] items-center"
             style={{
-              transform: (!isDesktop || visible) ? "scale(1)" : "scale(0)",
-              transition: SPRING,
+              transform: isDesktop ? `scale(${p})` : "scale(1)",
             }}
           >
             <h2 className="heading-1b" style={{ color: "#ffffff" }}>[OUR WORK]</h2>
@@ -154,11 +199,11 @@ export default function WorkSection() {
               top: "5%",
               left: "30px",
               width: isDesktop ? 417 : 300,
-              transform: (!isDesktop || visible) ? "translate(0,0)" : "translate(400px, 220px)",
-              transition: SPRING_CARD,
+              transform: cardTransform("topLeft", [410, 260]),
+              willChange: "transform",
             }}
           >
-            <div className="flex flex-col gap-[16px]" style={{ backgroundColor: "var(--color-dark-teal)", borderRadius: 12, cursor: "pointer" }} onMouseEnter={() => setHoveredCard(0)} onMouseLeave={() => setHoveredCard(null)}>
+            <div ref={cardContentRef} className="flex flex-col gap-[16px]" style={{ backgroundColor: "var(--color-dark-teal)", borderRadius: 12, cursor: "pointer" }} onMouseEnter={() => setHoveredCard(0)} onMouseLeave={() => setHoveredCard(null)}>
               <div style={{ height: isDesktop ? 220 : 160, borderRadius: 12, overflow: "hidden" }}>
                 <img src={cards[0].src} alt={cards[0].alt} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", transition: IMG_HOVER, transform: hoveredCard === 0 ? "scale(1.1)" : "scale(1)" }} />
               </div>
@@ -173,8 +218,8 @@ export default function WorkSection() {
               top: "5%",
               right: "30px",
               width: isDesktop ? 417 : 300,
-              transform: (!isDesktop || visible) ? "translate(0,0)" : "translate(-400px, 220px)",
-              transition: SPRING_CARD_2,
+              transform: cardTransform("topRight", [-410, 260]),
+              willChange: "transform",
             }}
           >
             <div className="flex flex-col gap-[16px]" style={{ backgroundColor: "var(--color-dark-teal)", borderRadius: 12, cursor: "pointer" }} onMouseEnter={() => setHoveredCard(1)} onMouseLeave={() => setHoveredCard(null)}>
@@ -192,8 +237,8 @@ export default function WorkSection() {
               bottom: "5%",
               left: "30px",
               width: isDesktop ? 417 : 300,
-              transform: (!isDesktop || visible) ? "translate(0,0)" : "translate(400px, -220px)",
-              transition: SPRING_CARD_2,
+              transform: cardTransform("bottomLeft", [410, -260]),
+              willChange: "transform",
             }}
           >
             <div className="flex flex-col gap-[16px]" style={{ backgroundColor: "var(--color-dark-teal)", borderRadius: 12, cursor: "pointer" }} onMouseEnter={() => setHoveredCard(2)} onMouseLeave={() => setHoveredCard(null)}>
@@ -211,8 +256,8 @@ export default function WorkSection() {
               bottom: "5%",
               right: "30px",
               width: isDesktop ? 417 : 300,
-              transform: (!isDesktop || visible) ? "translate(0,0)" : "translate(-400px, -220px)",
-              transition: SPRING_CARD_2,
+              transform: cardTransform("bottomRight", [-410, -260]),
+              willChange: "transform",
             }}
           >
             <div className="flex flex-col gap-[16px]" style={{ backgroundColor: "var(--color-dark-teal)", borderRadius: 12, cursor: "pointer" }} onMouseEnter={() => setHoveredCard(3)} onMouseLeave={() => setHoveredCard(null)}>

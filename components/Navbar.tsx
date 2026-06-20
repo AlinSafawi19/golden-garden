@@ -15,14 +15,38 @@ const navItems: NavItem[] = [
   { title: "Services", href: "/services" },
   { title: "Projects", href: "/projects" },
   { title: "Success Stories", href: "/success-stories" },
+  { title: "Blog", href: "/blog" },
 ];
+
+const PRIMARY_COUNT = 3;
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [ctaHovered, setCtaHovered] = useState(false);
   const [mobileCta, setMobileCta] = useState(false);
   const [hidden, setHidden] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
+  const [moreLocked, setMoreLocked] = useState(false);
+  const [moreHovered, setMoreHovered] = useState(false);
+  const [dropdownPos, setDropdownPos] = useState({ top: 0, left: 0 });
   const lastScrollY = useRef(0);
+  const headerRef = useRef<HTMLElement>(null);
+  const moreButtonRef = useRef<HTMLButtonElement>(null);
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const openMore = () => {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+    if (moreButtonRef.current && headerRef.current) {
+      const btnRect = moreButtonRef.current.getBoundingClientRect();
+      const headerRect = headerRef.current.getBoundingClientRect();
+      setDropdownPos({ top: headerRect.bottom, left: btnRect.left });
+    }
+    setMoreOpen(true);
+  };
+  const closeMore = () => {
+    if (moreLocked) return;
+    closeTimer.current = setTimeout(() => setMoreOpen(false), 80);
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -34,8 +58,21 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  useEffect(() => {
+    if (!moreOpen) return;
+    const handleClick = (e: MouseEvent) => {
+      if (headerRef.current && !headerRef.current.contains(e.target as Node)) {
+        setMoreOpen(false);
+        setMoreLocked(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, [moreOpen]);
+
   return (
     <header
+      ref={headerRef}
       className="w-full bg-white sticky top-0 z-50 relative"
       style={{
         transform: hidden ? "translateY(-100%)" : "translateY(0)",
@@ -43,7 +80,7 @@ export default function Navbar() {
       }}
     >
       {/* Content — space-between, center-aligned, overflow clip */}
-      <div className="w-full max-w-[1296px] mx-auto flex flex-row justify-between items-center overflow-hidden py-[16px] px-[20px]">
+      <div className="w-full max-w-[1296px] mx-auto flex flex-row justify-between items-center py-[16px] px-[20px]">
 
         {/* Logo Wrap */}
         <div className="flex flex-row items-center w-full justify-between tablet:w-auto tablet:justify-start tablet:gap-[10px]">
@@ -84,13 +121,70 @@ export default function Navbar() {
 
         {/* Item List — tablet and desktop */}
         <nav className="hidden tablet:flex flex-row gap-[44px] items-center">
-          {navItems.map((item) => (
+          {navItems.slice(0, PRIMARY_COUNT).map((item) => (
             <div key={item.title} className="relative group">
               <Link href={item.href} className="menu-item">
                 <RollingText>{item.title}</RollingText>
               </Link>
             </div>
           ))}
+
+          {/* More button + dropdown */}
+          <div
+            className="relative"
+            onMouseEnter={openMore}
+            onMouseLeave={closeMore}
+          >
+            <button
+              ref={moreButtonRef}
+              className="menu-item flex items-center gap-[6px]"
+              onClick={() => { const next = !moreLocked; setMoreLocked(next); setMoreOpen(next); }}
+              onMouseEnter={() => setMoreHovered(true)}
+              onMouseLeave={() => setMoreHovered(false)}
+              aria-expanded={moreOpen}
+            >
+              <RollingText>Projects</RollingText>
+              <svg
+                viewBox="0 0 24 24"
+                width={20}
+                height={20}
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                style={{ transition: "transform 0.4s cubic-bezier(0.76, 0, 0.24, 1)", transform: (moreOpen || moreHovered) ? "rotate(180deg)" : "rotate(0deg)", flexShrink: 0 }}
+              >
+                <path d="M 0 0 L 6 6 L 12 0" fill="transparent" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" stroke="currentColor" transform="translate(6 9)" />
+              </svg>
+            </button>
+
+            {/* Dropdown */}
+            <div
+              className="fixed z-50 overflow-hidden bg-[var(--color-off-white)]"
+              style={{
+                top: dropdownPos.top,
+                left: dropdownPos.left,
+                minWidth: 200,
+                maxHeight: moreOpen ? "400px" : "0px",
+                opacity: moreOpen ? 1 : 0,
+                pointerEvents: moreOpen ? "auto" : "none",
+                transition: "max-height 0.8s cubic-bezier(0.37, 0, 0.63, 1), opacity 0.8s cubic-bezier(0.37, 0, 0.63, 1)",
+              }}
+              onMouseEnter={openMore}
+              onMouseLeave={closeMore}
+            >
+              <nav className="flex flex-col p-[20px] gap-[6px]">
+                {navItems.slice(PRIMARY_COUNT).map((item) => (
+                  <Link
+                    key={item.title}
+                    href={item.href}
+                    className="menu-item"
+                    onClick={() => { setMoreOpen(false); setMoreLocked(false); }}
+                  >
+                    <RollingText>{item.title}</RollingText>
+                  </Link>
+                ))}
+              </nav>
+            </div>
+          </div>
         </nav>
 
         {/* Hero Button — tablet and desktop */}

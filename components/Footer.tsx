@@ -1,5 +1,10 @@
+"use client";
+
 import Link from "next/link";
+import { useState } from "react";
 import RollingText from "@/components/RollingText";
+
+const ARROW_TRANSITION = "transform 0.6s cubic-bezier(0.76, 0, 0.24, 1)";
 
 type NavLink = { title: string; href: string; target?: string };
 
@@ -10,13 +15,14 @@ const navColumns: { title: string; links: NavLink[] }[] = [
       { title: "Home", href: "/" },
       { title: "Services", href: "/services" },
       { title: "Projects", href: "/projects" },
-      { title: "Success Stories", href: "/success-stories" },
     ],
   },
   {
     title: "Company",
     links: [
       { title: "About Us", href: "/about" },
+      { title: "Success Stories", href: "/success-stories" },
+      { title: "Blog", href: "/blog" },
     ],
   },
   {
@@ -81,6 +87,8 @@ function ContactCol({ col }: { col: (typeof contactColumns)[number] }) {
 }
 
 export default function Footer() {
+  const [ctaHovered, setCtaHovered] = useState(false);
+
   return (
     <footer className="w-full" style={{ backgroundColor: "var(--color-dark-teal)" }}>
       <div className="w-full max-w-[1296px] mx-auto pt-[56px] px-[20px] pb-[16px] tablet:px-[30px]">
@@ -116,7 +124,7 @@ export default function Footer() {
         </div>
 
         {/* Copyright */}
-        <div className="mt-[30px] tablet:mt-[40px] flex flex-col gap-[16px] items-center tablet:flex-row tablet:justify-between tablet:items-center pt-[30px] tablet:pt-[40px]">
+        <div className="mt-[30px] tablet:mt-[40px] flex flex-col gap-[16px] items-center tablet:flex-row tablet:justify-between tablet:items-center">
           <p className="body-20-regular-2">© 2026 Copyright - Golden Garden</p>
           <p className="body-20-regular-2">All rights reserved.</p>
         </div>

@@ -110,12 +110,14 @@ export default function WorkSection() {
         </div>
         <div className="flex flex-col gap-[32px]">
           {cards.map((card, i) => (
-            <div key={card.alt} className="flex flex-col gap-[16px]">
-              <div
-                style={{ borderRadius: 12, overflow: "hidden", aspectRatio: "16/9", cursor: "pointer" }}
-                onMouseEnter={() => setHoveredCard(i)}
-                onMouseLeave={() => setHoveredCard(null)}
-              >
+            <div
+              key={card.alt}
+              className="flex flex-col gap-[16px]"
+              style={{ cursor: "pointer" }}
+              onMouseEnter={() => setHoveredCard(i)}
+              onMouseLeave={() => setHoveredCard(null)}
+            >
+              <div style={{ borderRadius: 12, overflow: "hidden", aspectRatio: "16/9" }}>
                 <img
                   src={card.src}
                   alt={card.alt}
@@ -156,8 +158,8 @@ export default function WorkSection() {
               transition: SPRING_CARD,
             }}
           >
-            <div className="flex flex-col gap-[16px]" style={{ backgroundColor: "var(--color-dark-teal)", borderRadius: 12 }}>
-              <div style={{ height: isDesktop ? 220 : 160, borderRadius: 12, overflow: "hidden", cursor: "pointer" }} onMouseEnter={() => setHoveredCard(0)} onMouseLeave={() => setHoveredCard(null)}>
+            <div className="flex flex-col gap-[16px]" style={{ backgroundColor: "var(--color-dark-teal)", borderRadius: 12, cursor: "pointer" }} onMouseEnter={() => setHoveredCard(0)} onMouseLeave={() => setHoveredCard(null)}>
+              <div style={{ height: isDesktop ? 220 : 160, borderRadius: 12, overflow: "hidden" }}>
                 <img src={cards[0].src} alt={cards[0].alt} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", transition: IMG_HOVER, transform: hoveredCard === 0 ? "scale(1.1)" : "scale(1)" }} />
               </div>
               <h3 className="heading-2b" style={{ color: "#ffffff", textAlign: "center", paddingBottom: 16 }}>{cards[0].label}</h3>
@@ -175,8 +177,8 @@ export default function WorkSection() {
               transition: SPRING_CARD_2,
             }}
           >
-            <div className="flex flex-col gap-[16px]" style={{ backgroundColor: "var(--color-dark-teal)", borderRadius: 12 }}>
-              <div style={{ height: isDesktop ? 220 : 160, borderRadius: 12, overflow: "hidden", cursor: "pointer" }} onMouseEnter={() => setHoveredCard(1)} onMouseLeave={() => setHoveredCard(null)}>
+            <div className="flex flex-col gap-[16px]" style={{ backgroundColor: "var(--color-dark-teal)", borderRadius: 12, cursor: "pointer" }} onMouseEnter={() => setHoveredCard(1)} onMouseLeave={() => setHoveredCard(null)}>
+              <div style={{ height: isDesktop ? 220 : 160, borderRadius: 12, overflow: "hidden" }}>
                 <img src={cards[1].src} alt={cards[1].alt} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", transition: IMG_HOVER, transform: hoveredCard === 1 ? "scale(1.1)" : "scale(1)" }} />
               </div>
               <h3 className="heading-2b" style={{ color: "#ffffff", textAlign: "center", paddingBottom: 16 }}>{cards[1].label}</h3>
@@ -194,8 +196,8 @@ export default function WorkSection() {
               transition: SPRING_CARD_2,
             }}
           >
-            <div className="flex flex-col gap-[16px]" style={{ backgroundColor: "var(--color-dark-teal)", borderRadius: 12 }}>
-              <div style={{ height: isDesktop ? 220 : 160, borderRadius: 12, overflow: "hidden", cursor: "pointer" }} onMouseEnter={() => setHoveredCard(2)} onMouseLeave={() => setHoveredCard(null)}>
+            <div className="flex flex-col gap-[16px]" style={{ backgroundColor: "var(--color-dark-teal)", borderRadius: 12, cursor: "pointer" }} onMouseEnter={() => setHoveredCard(2)} onMouseLeave={() => setHoveredCard(null)}>
+              <div style={{ height: isDesktop ? 220 : 160, borderRadius: 12, overflow: "hidden" }}>
                 <img src={cards[2].src} alt={cards[2].alt} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", transition: IMG_HOVER, transform: hoveredCard === 2 ? "scale(1.1)" : "scale(1)" }} />
               </div>
               <h3 className="heading-2b" style={{ color: "#ffffff", textAlign: "center", paddingBottom: 16 }}>{cards[2].label}</h3>
@@ -213,8 +215,8 @@ export default function WorkSection() {
               transition: SPRING_CARD_2,
             }}
           >
-            <div className="flex flex-col gap-[16px]" style={{ backgroundColor: "var(--color-dark-teal)", borderRadius: 12 }}>
-              <div style={{ height: isDesktop ? 220 : 160, borderRadius: 12, overflow: "hidden", cursor: "pointer" }} onMouseEnter={() => setHoveredCard(3)} onMouseLeave={() => setHoveredCard(null)}>
+            <div className="flex flex-col gap-[16px]" style={{ backgroundColor: "var(--color-dark-teal)", borderRadius: 12, cursor: "pointer" }} onMouseEnter={() => setHoveredCard(3)} onMouseLeave={() => setHoveredCard(null)}>
+              <div style={{ height: isDesktop ? 220 : 160, borderRadius: 12, overflow: "hidden" }}>
                 <img src={cards[3].src} alt={cards[3].alt} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", transition: IMG_HOVER, transform: hoveredCard === 3 ? "scale(1.1)" : "scale(1)" }} />
               </div>
               <h3 className="heading-2b" style={{ color: "#ffffff", textAlign: "center", paddingBottom: 16 }}>{cards[3].label}</h3>

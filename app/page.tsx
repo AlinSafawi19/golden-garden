@@ -8,15 +8,16 @@ import SuccessStoriesSection from "@/components/SuccessStoriesSection";
 import { getDefaultEntry, getEntryByField } from "@/lib/canopy";
 
 export default async function Home() {
-  const [hero, ticker] = await Promise.all([
+  const [hero, ticker, about] = await Promise.all([
     getDefaultEntry("welcome-section"),
     getEntryByField("moving-text-strip", "Page", "Home"),
+    getEntryByField("about-intro", "Page", "Home"),
   ]);
 
   return (
     <>
       <HeroSection hero={hero} />
-      <AboutSection />
+      <AboutSection content={about} />
       <TickerSection ticker={ticker} />
       <ServicesSection />
       <WhyChooseUsSection />

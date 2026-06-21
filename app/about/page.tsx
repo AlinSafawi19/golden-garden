@@ -5,7 +5,10 @@ import TickerSection from "@/components/TickerSection";
 import { getEntryByField } from "@/lib/canopy";
 
 export default async function AboutPage() {
-  const ticker = await getEntryByField("moving-text-strip", "Page", "About");
+  const [ticker, about] = await Promise.all([
+    getEntryByField("moving-text-strip", "Page", "About"),
+    getEntryByField("about-intro", "Page", "About"),
+  ]);
 
   return (
     <div className="pb-[60px] tablet:pb-[80px] desktop:pb-[100px] bg-[var(--color-white)]">
@@ -16,7 +19,7 @@ export default async function AboutPage() {
         <HeroSlideshow />
       </section>
 
-      <AboutSection />
+      <AboutSection content={about} />
       <TickerSection ticker={ticker} />
     </div>
   );

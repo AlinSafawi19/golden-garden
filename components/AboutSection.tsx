@@ -3,15 +3,21 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import type { CanopyEntry } from "@/lib/canopy";
 
 const SPRING =
   "opacity 0.4s cubic-bezier(0.34, 1.2, 0.64, 1), transform 0.4s cubic-bezier(0.34, 1.2, 0.64, 1)";
 const ARROW_TRANSITION = "transform 0.6s cubic-bezier(0.76, 0, 0.24, 1)";
 
-export default function AboutSection() {
+export default function AboutSection({ content }: { content: CanopyEntry | null }) {
   const ref = useRef<HTMLElement>(null);
   const [visible, setVisible] = useState(false);
   const [learnHovered, setLearnHovered] = useState(false);
+
+  const tag = content?.Tag ?? "";
+  const headingHtml = content?.Heading ?? "";
+  const buttonText = content?.["Button Text"] ?? "";
+  const buttonLink = content?.["Button Link"] ?? "";
 
   useEffect(() => {
     const el = ref.current;
@@ -51,16 +57,21 @@ export default function AboutSection() {
             height={20}
             style={{ flexShrink: 0 }}
           />
-          <span className="body-16-regular">About Us</span>
+          <span className="body-16-regular">{tag}</span>
         </div>
 
         {/* Text wrapper */}
         <div className="flex flex-col gap-[24px] items-start w-full tablet:w-[75%] desktop:max-w-[855px]">
-          <h3 style={{ whiteSpace: "pre-wrap" }}>{`                         We design and maintain beautiful outdoor spaces that bring nature closer to your everyday life, effortlessly. From thoughtful landscaping to expert garden care, we help your green spaces grow, thrive, and inspire year-round.`}</h3>
+          <h3
+            className="[&>p]:m-0"
+            style={{ whiteSpace: "pre-wrap" }}
+            dangerouslySetInnerHTML={{ __html: headingHtml }}
+          />
 
           {/* Learn More CTA */}
+          {buttonText && (
           <Link
-            href="/about"
+            href={buttonLink || "#"}
             className="cta-link inline-flex items-center gap-[8px] text-[var(--color-dark-gray)] no-underline hover:text-[var(--color-black)]"
             onMouseEnter={() => setLearnHovered(true)}
             onMouseLeave={() => setLearnHovered(false)}
@@ -81,7 +92,7 @@ export default function AboutSection() {
               className="body-16-regular"
               style={{ color: "var(--color-dark-gray)" }}
             >
-              LEARN MORE
+              {buttonText}
             </span>
             <span
               aria-hidden="true"
@@ -157,6 +168,7 @@ export default function AboutSection() {
               ]
             </span>
           </Link>
+          )}
         </div>
       </div>
     </section>

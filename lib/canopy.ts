@@ -11,12 +11,27 @@ function config() {
 }
 
 // CMS field values come back as strings (booleans included, e.g. "true").
+// `list` fields are the exception: they hold an array of string-keyed rows.
 export type CanopyEntry = {
   id: string;
   [field: string]: string;
 };
 
+export type CanopyListItem = { [field: string]: string };
+
 const isDefault = (entry: CanopyEntry) => entry.Default === "true";
+
+/**
+ * Reads a `list` sub-field from an entry as an array of rows. Returns [] when
+ * the field is missing or not a list.
+ */
+export function getListField(
+  entry: CanopyEntry | null,
+  field: string
+): CanopyListItem[] {
+  const value = entry?.[field] as unknown;
+  return Array.isArray(value) ? (value as CanopyListItem[]) : [];
+}
 
 const VIDEO_EXTENSIONS = ["mp4", "webm", "ogg", "ogv", "mov", "m4v"];
 

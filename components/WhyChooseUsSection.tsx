@@ -2,13 +2,13 @@
 
 import { Fragment, useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import type { CanopyEntry } from "@/lib/canopy";
+import { getListField, type CanopyEntry, type CanopyListItem } from "@/lib/canopy";
 
 const SPRING =
   "opacity 0.4s cubic-bezier(0.34, 1.2, 0.64, 1), transform 0.4s cubic-bezier(0.34, 1.2, 0.64, 1)";
 const ARROW_TRANSITION = "transform 0.6s cubic-bezier(0.76, 0, 0.24, 1)";
 
-const byOrder = (a: CanopyEntry, b: CanopyEntry) =>
+const byOrder = (a: CanopyListItem, b: CanopyListItem) =>
   Number(a.Order) - Number(b.Order);
 
 function CountUp({ value, start, className, style }: { value: string; start: boolean; className?: string; style?: React.CSSProperties }) {
@@ -44,10 +44,8 @@ function CountUp({ value, start, className, style }: { value: string; start: boo
 
 export default function WhyChooseUsSection({
   content,
-  stats: statsInput,
 }: {
   content: CanopyEntry | null;
-  stats: CanopyEntry[];
 }) {
   const ref = useRef<HTMLElement>(null);
   const [hovered, setHovered] = useState(false);
@@ -57,7 +55,7 @@ export default function WhyChooseUsSection({
   const eyebrow = content?.Eyebrow ?? "";
   const ctaText = content?.["CTA Text"] ?? "";
   const ctaLink = content?.["CTA Link"] ?? "";
-  const stats = [...statsInput].sort(byOrder);
+  const stats = getListField(content, "Stats").sort(byOrder);
 
   useEffect(() => {
     const el = ref.current;
@@ -145,7 +143,7 @@ export default function WhyChooseUsSection({
         {/* Stats */}
         <div className="flex flex-col gap-[32px] tablet:flex-row tablet:items-stretch tablet:gap-0">
           {stats.map((s, i) => (
-            <Fragment key={s.id}>
+            <Fragment key={s.Label || i}>
               {i > 0 && (
                 <div
                   aria-hidden="true"

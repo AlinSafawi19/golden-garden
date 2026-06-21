@@ -5,13 +5,15 @@ import ServicesSection from "@/components/ServicesSection";
 import WhyChooseUsSection from "@/components/WhyChooseUsSection";
 import WorkSection from "@/components/WorkSection";
 import SuccessStoriesSection from "@/components/SuccessStoriesSection";
-import { getDefaultEntry, getEntryByField } from "@/lib/canopy";
+import { getCategoryEntries, getDefaultEntry, getEntryByField, getFirstEntry } from "@/lib/canopy";
 
 export default async function Home() {
-  const [hero, ticker, about] = await Promise.all([
+  const [hero, ticker, about, whyChooseUs, whyChooseUsStats] = await Promise.all([
     getDefaultEntry("welcome-section"),
     getEntryByField("moving-text-strip", "Page", "Home"),
     getEntryByField("about-intro", "Page", "Home"),
+    getFirstEntry("why-choose-us"),
+    getCategoryEntries("why-choose-us-stats"),
   ]);
 
   return (
@@ -20,7 +22,7 @@ export default async function Home() {
       <AboutSection content={about} />
       <TickerSection ticker={ticker} />
       <ServicesSection />
-      <WhyChooseUsSection />
+      <WhyChooseUsSection content={whyChooseUs} stats={whyChooseUsStats} />
       <WorkSection />
       <SuccessStoriesSection />
     </>

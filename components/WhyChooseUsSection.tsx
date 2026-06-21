@@ -2,16 +2,14 @@
 
 import { Fragment, useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import type { CanopyEntry } from "@/lib/canopy";
 
 const SPRING =
   "opacity 0.4s cubic-bezier(0.34, 1.2, 0.64, 1), transform 0.4s cubic-bezier(0.34, 1.2, 0.64, 1)";
 const ARROW_TRANSITION = "transform 0.6s cubic-bezier(0.76, 0, 0.24, 1)";
 
-const stats = [
-  { value: "440+", label: "Projects Completed" },
-  { value: "2M", label: "Happy Customers" },
-  { value: "10", label: "Years of Experience" },
-];
+const byOrder = (a: CanopyEntry, b: CanopyEntry) =>
+  Number(a.Order) - Number(b.Order);
 
 function CountUp({ value, start, className, style }: { value: string; start: boolean; className?: string; style?: React.CSSProperties }) {
   const match = value.match(/^([\d.]+)(.*)$/);
@@ -44,10 +42,22 @@ function CountUp({ value, start, className, style }: { value: string; start: boo
   );
 }
 
-export default function WhyChooseUsSection() {
+export default function WhyChooseUsSection({
+  content,
+  stats: statsInput,
+}: {
+  content: CanopyEntry | null;
+  stats: CanopyEntry[];
+}) {
   const ref = useRef<HTMLElement>(null);
   const [hovered, setHovered] = useState(false);
   const [visible, setVisible] = useState(false);
+
+  const background = content?.Background ?? "";
+  const eyebrow = content?.Eyebrow ?? "";
+  const ctaText = content?.["CTA Text"] ?? "";
+  const ctaLink = content?.["CTA Link"] ?? "";
+  const stats = [...statsInput].sort(byOrder);
 
   useEffect(() => {
     const el = ref.current;
@@ -62,14 +72,14 @@ export default function WhyChooseUsSection() {
 
   const learnMoreLink = (
     <Link
-      href="/about"
+      href={ctaLink || "#"}
       className="cta-link inline-flex items-center gap-[8px] no-underline"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{ color: "var(--color-off-white)", transition: "color 0.6s cubic-bezier(0.44, 0, 0.56, 1)" }}
     >
       <span style={{ fontFamily: "var(--font-sans)", fontWeight: 500, fontSize: "24px", letterSpacing: "-0.01em", lineHeight: 1 }}>[</span>
-      <span className="body-16-regular" style={{ color: "var(--color-off-white)" }}>LEARN MORE</span>
+      <span className="body-16-regular" style={{ color: "var(--color-off-white)" }}>{ctaText}</span>
       <span aria-hidden="true" style={{ display: "inline-block", position: "relative", width: 20, height: 20, overflow: "hidden", flexShrink: 0 }}>
         <span style={{ position: "absolute", inset: 0, display: "flex", transition: ARROW_TRANSITION, transform: hovered ? "translate(110%, -110%)" : "translate(0, 0)" }}>
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -91,7 +101,7 @@ export default function WhyChooseUsSection() {
       ref={ref}
       className="relative overflow-hidden w-full flex flex-col px-[20px] py-[60px] tablet:px-[30px] tablet:py-[80px] desktop:px-[30px] desktop:py-[120px]"
       style={{
-        backgroundImage: "url('https://framerusercontent.com/images/0Oj5TzT6kXfljMOcMI6rSzOEDQ.webp?scale-down-to=2048&width=2160&height=723')",
+        backgroundImage: background ? `url('${background}')` : undefined,
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
@@ -127,7 +137,7 @@ export default function WhyChooseUsSection() {
                 <line x1="0" y1="1" x2="0" y2="4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
               </g>
             </svg>
-            <span className="body-16-regular" style={{ color: "var(--color-off-white)" }}>Why Choose Us</span>
+            <span className="body-16-regular" style={{ color: "var(--color-off-white)" }}>{eyebrow}</span>
           </div>
           <div className="hidden tablet:block">{learnMoreLink}</div>
         </div>
@@ -135,7 +145,7 @@ export default function WhyChooseUsSection() {
         {/* Stats */}
         <div className="flex flex-col gap-[32px] tablet:flex-row tablet:items-stretch tablet:gap-0">
           {stats.map((s, i) => (
-            <Fragment key={s.label}>
+            <Fragment key={s.id}>
               {i > 0 && (
                 <div
                   aria-hidden="true"
@@ -168,8 +178,8 @@ export default function WhyChooseUsSection() {
                   transitionDelay: `${0.1 + i * 0.1}s`,
                 }}
               >
-                <CountUp value={s.value} start={visible} className="heading-2c" style={{ color: "var(--color-off-white)" }} />
-                <span className="body-16-regular" style={{ color: "rgba(250,250,250,0.7)" }}>{s.label}</span>
+                <CountUp value={s.Value} start={visible} className="heading-2c" style={{ color: "var(--color-off-white)" }} />
+                <span className="body-16-regular" style={{ color: "rgba(250,250,250,0.7)" }}>{s.Label}</span>
               </div>
             </Fragment>
           ))}

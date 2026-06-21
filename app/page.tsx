@@ -5,11 +5,14 @@ import ServicesSection from "@/components/ServicesSection";
 import WhyChooseUsSection from "@/components/WhyChooseUsSection";
 import WorkSection from "@/components/WorkSection";
 import SuccessStoriesSection from "@/components/SuccessStoriesSection";
+import { getDefaultEntry } from "@/lib/canopy";
 
-export default function Home() {
+export default async function Home() {
+  const hero = await getDefaultEntry("welcome-section");
+
   return (
     <>
-      <HeroSection />
+      <HeroSection hero={hero} />
       <AboutSection />
       <TickerSection />
       <ServicesSection />

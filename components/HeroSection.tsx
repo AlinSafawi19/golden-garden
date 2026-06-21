@@ -1,18 +1,23 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { mediaType, type CanopyEntry } from "@/lib/canopy";
 
-export default function HeroSection() {
+export default function HeroSection({ hero }: { hero: CanopyEntry | null }) {
   const sectionRef = useRef<HTMLElement>(null);
-  const imageRef = useRef<HTMLImageElement>(null);
+  const imageRef = useRef<HTMLImageElement | HTMLVideoElement>(null);
   const headingRef = useRef<HTMLDivElement>(null);
   const introRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const wordmarkTextRef = useRef<HTMLSpanElement>(null);
 
+  const backgroundUrl = hero?.Background ?? null;
+  const backgroundType = backgroundUrl ? mediaType(backgroundUrl) : null;
+  const statVideo = hero?.["Stat Video"] ?? null;
+
   // "On Appear", per-character enter effect (see Framer panel):
   // opacity 0 + 40px Y offset + 5px blur, eased over 0.8s with a 0.03s stagger.
-  const introText = "Where Green Dreams Take Root & Gardens Thrive.";
+  const introText = hero?.Headline ?? "";
   const words = introText.split(" ");
   let charCount = 0;
 
@@ -104,12 +109,24 @@ export default function HeroSection() {
       ref={sectionRef}
       className="relative min-h-[calc(100vh-52px)] overflow-hidden bg-[var(--color-soft-white)]"
     >
-      <img
-        ref={imageRef}
-        src="https://framerusercontent.com/images/Vs3xjh9zhi5xd5RfyQgYf4M2yLQ.webp?width=2160&height=1290"
-        alt=""
-        className="absolute -top-[15%] left-0 w-full h-[130%] object-cover will-change-transform"
-      />
+      {backgroundType === "video" ? (
+        <video
+          ref={imageRef as React.RefObject<HTMLVideoElement>}
+          src={backgroundUrl!}
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute -top-[15%] left-0 w-full h-[130%] object-cover will-change-transform"
+        />
+      ) : backgroundUrl ? (
+        <img
+          ref={imageRef as React.RefObject<HTMLImageElement>}
+          src={backgroundUrl}
+          alt=""
+          className="absolute -top-[15%] left-0 w-full h-[130%] object-cover will-change-transform"
+        />
+      ) : null}
 
       {/* Bottom scrim — keeps the headline legible over any part of the photo */}
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[55%] bg-gradient-to-t from-black/55 via-black/20 to-transparent" />
@@ -164,14 +181,16 @@ export default function HeroSection() {
       >
         <div className="flex w-full items-stretch gap-[16px] rounded-[12px] bg-white/20 p-[16px] backdrop-blur-[47px] tablet:w-[clamp(340px,34vw,440px)] tablet:gap-[23px] tablet:p-[21px]">
           {/* Video */}
-          <video
-            src="https://framerusercontent.com/assets/ekmdQ1zyWDTrVTODmt0YYQ0Zrqs.mp4"
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="w-[clamp(100px,11vw,148px)] flex-shrink-0 self-stretch rounded-[12px] object-cover"
-          />
+          {statVideo && (
+            <video
+              src={statVideo}
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="w-[clamp(100px,11vw,148px)] flex-shrink-0 self-stretch rounded-[12px] object-cover"
+            />
+          )}
 
           {/* Text column — blurb on top, stat row at the bottom */}
           <div className="flex flex-1 flex-col justify-between gap-[16px] tablet:gap-[23px]">
@@ -179,7 +198,7 @@ export default function HeroSection() {
               className="body-18-regular"
               style={{ color: "var(--color-white)" }}
             >
-              90k+ gardens have been saved and made from all over the world.
+              {hero?.["Stat Description"]}
             </p>
 
             <div className="flex items-end justify-between">
@@ -192,13 +211,13 @@ export default function HeroSection() {
                   color: "var(--color-white)",
                 }}
               >
-                90K+
+                {hero?.["Stat Number"]}
               </span>
               <span
                 className="body-18-medium pb-[4px]"
                 style={{ color: "var(--color-white)" }}
               >
-                Gardens
+                {hero?.["Stat Label"]}
               </span>
             </div>
           </div>

@@ -69,6 +69,15 @@ export async function getDefaultEntry(slug: string): Promise<CanopyEntry | null>
 }
 
 /**
+ * Returns the single (first) entry of a category, or null when empty. Useful
+ * for settings-style categories that hold exactly one entry.
+ */
+export async function getFirstEntry(slug: string): Promise<CanopyEntry | null> {
+  const entries = await getCategoryEntries(slug);
+  return entries[0] ?? null;
+}
+
+/**
  * Returns the first entry of a category whose `field` equals `value`, or null
  * when there is none. Useful when a category holds one entry per page/variant.
  */

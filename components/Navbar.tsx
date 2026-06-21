@@ -5,24 +5,28 @@ import { usePathname } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 import RollingText from "@/components/RollingText";
 import Logo from "@/components/Logo";
+import type { CanopyEntry } from "@/lib/canopy";
 
-type NavItem = {
-  title: string;
-  href: string;
-};
+const byOrder = (a: CanopyEntry, b: CanopyEntry) =>
+  Number(a.Order) - Number(b.Order);
+const targetOf = (entry: CanopyEntry) =>
+  entry["New Tab"] === "true" ? "_blank" : undefined;
 
-const navItems: NavItem[] = [
-  { title: "Home", href: "/" },
-  { title: "About Us", href: "/about" },
-  { title: "Services", href: "/services" },
-  { title: "Projects", href: "/projects" },
-  { title: "Success Stories", href: "/success-stories" },
-];
-
-const PRIMARY_COUNT = 3;
-
-export default function Navbar() {
+export default function Navbar({
+  links,
+  settings,
+}: {
+  links: CanopyEntry[];
+  settings: CanopyEntry | null;
+}) {
   const pathname = usePathname();
+
+  const primary = links.filter((l) => l.Group === "Primary").sort(byOrder);
+  const more = links.filter((l) => l.Group === "More").sort(byOrder);
+  const allLinks = [...primary, ...more];
+  const moreLabel = settings?.["Dropdown Label"] ?? "";
+  const ctaText = settings?.["CTA Text"] ?? "";
+  const ctaLink = settings?.["CTA Link"] ?? "";
   const overlayBg =
     pathname === "/"
       ? "var(--color-off-white)"
@@ -127,10 +131,10 @@ export default function Navbar() {
 
         {/* Item List — tablet and desktop */}
         <nav className="hidden tablet:flex flex-row gap-[44px] items-center">
-          {navItems.slice(0, PRIMARY_COUNT).map((item) => (
-            <div key={item.title} className="relative group">
-              <Link href={item.href} className="menu-item">
-                <RollingText>{item.title}</RollingText>
+          {primary.map((item) => (
+            <div key={item.id} className="relative group">
+              <Link href={item.URL} className="menu-item" target={targetOf(item)} rel={targetOf(item) === "_blank" ? "noopener noreferrer" : undefined}>
+                <RollingText>{item.Label}</RollingText>
               </Link>
             </div>
           ))}
@@ -149,7 +153,7 @@ export default function Navbar() {
               onMouseLeave={() => setMoreHovered(false)}
               aria-expanded={moreOpen}
             >
-              <RollingText>Projects</RollingText>
+              <RollingText>{moreLabel}</RollingText>
               <svg
                 viewBox="0 0 24 24"
                 width={20}
@@ -179,14 +183,16 @@ export default function Navbar() {
               onMouseLeave={closeMore}
             >
               <nav className="flex flex-col p-[20px] gap-[6px]">
-                {navItems.slice(PRIMARY_COUNT).map((item) => (
+                {more.map((item) => (
                   <Link
-                    key={item.title}
-                    href={item.href}
+                    key={item.id}
+                    href={item.URL}
                     className="menu-item"
+                    target={targetOf(item)}
+                    rel={targetOf(item) === "_blank" ? "noopener noreferrer" : undefined}
                     onClick={() => { setMoreOpen(false); setMoreLocked(false); }}
                   >
-                    <RollingText>{item.title}</RollingText>
+                    <RollingText>{item.Label}</RollingText>
                   </Link>
                 ))}
               </nav>
@@ -196,7 +202,7 @@ export default function Navbar() {
 
         {/* Hero Button — tablet and desktop */}
         <Link
-          href="/contact"
+          href={ctaLink || "#"}
           className="cta-link hidden tablet:inline-flex items-center gap-[8px] text-[var(--color-dark-gray)] px-[16px] py-[8px] no-underline hover:text-[var(--color-black)]"
           onMouseEnter={() => setCtaHovered(true)}
           onMouseLeave={() => setCtaHovered(false)}
@@ -205,7 +211,7 @@ export default function Navbar() {
           }}
         >
           <span style={{ fontFamily: "var(--font-sans)", fontWeight: 500, fontSize: "24px", letterSpacing: "-0.01em", lineHeight: 1 }}>[</span>
-          <span className="body-16-regular" style={{ color: "var(--color-dark-gray)" }}>Plan My Garden</span>
+          <span className="body-16-regular" style={{ color: "var(--color-dark-gray)" }}>{ctaText}</span>
           <span aria-hidden="true" style={{ display: "inline-block", position: "relative", width: 20, height: 20, overflow: "hidden", flexShrink: 0 }}>
             <span style={{ position: "absolute", inset: 0, display: "flex", transition: "transform 0.6s cubic-bezier(0.76, 0, 0.24, 1)", transform: ctaHovered ? "translate(110%, -110%)" : "translate(0, 0)" }}>
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -235,20 +241,22 @@ export default function Navbar() {
       >
         <nav className="flex flex-col p-[20px] gap-[20px]">
           <div className="flex flex-col gap-[6px]">
-            {navItems.map((item) => (
+            {allLinks.map((item) => (
               <Link
-                key={item.title}
-                href={item.href}
+                key={item.id}
+                href={item.URL}
                 className="menu-item"
+                target={targetOf(item)}
+                rel={targetOf(item) === "_blank" ? "noopener noreferrer" : undefined}
                 onClick={() => setMobileOpen(false)}
               >
-                <RollingText>{item.title}</RollingText>
+                <RollingText>{item.Label}</RollingText>
               </Link>
             ))}
           </div>
           <div>
           <Link
-            href="/contact"
+            href={ctaLink || "#"}
             className="inline-flex items-center gap-[8px] text-[var(--color-dark-gray)] no-underline hover:text-[var(--color-black)]"
             onClick={() => setMobileOpen(false)}
             onMouseEnter={() => setMobileCta(true)}
@@ -256,7 +264,7 @@ export default function Navbar() {
             style={{ transition: "color 0.6s cubic-bezier(0.44, 0, 0.56, 1)" }}
           >
             <span style={{ fontFamily: "var(--font-sans)", fontWeight: 500, fontSize: "24px", letterSpacing: "-0.01em", lineHeight: 1 }}>[</span>
-            <span className="body-16-regular" style={{ color: "var(--color-dark-gray)" }}>Plan My Garden</span>
+            <span className="body-16-regular" style={{ color: "var(--color-dark-gray)" }}>{ctaText}</span>
             <span aria-hidden="true" style={{ display: "inline-block", position: "relative", width: 20, height: 20, overflow: "hidden", flexShrink: 0 }}>
               <span style={{ position: "absolute", inset: 0, display: "flex", transition: "transform 0.6s cubic-bezier(0.76, 0, 0.24, 1)", transform: mobileCta ? "translate(110%, -110%)" : "translate(0, 0)" }}>
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">

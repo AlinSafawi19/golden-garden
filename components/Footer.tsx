@@ -4,42 +4,17 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import RollingText from "@/components/RollingText";
 import Logo from "@/components/Logo";
+import type { CanopyEntry } from "@/lib/canopy";
 
 const ARROW_TRANSITION = "transform 0.6s cubic-bezier(0.76, 0, 0.24, 1)";
 
-type NavLink = { title: string; href: string; target?: string };
+// Footer nav columns, left-to-right.
+const GROUP_ORDER = ["Main Pages", "Company", "Socials"];
 
-const navColumns: { title: string; links: NavLink[] }[] = [
-  {
-    title: "Main Pages",
-    links: [
-      { title: "Home", href: "/" },
-      { title: "Services", href: "/services" },
-      { title: "Projects", href: "/projects" },
-    ],
-  },
-  {
-    title: "Company",
-    links: [
-      { title: "About Us", href: "/about" },
-      { title: "Success Stories", href: "/success-stories" },
-      { title: "Contact", href: "/contact" },
-    ],
-  },
-  {
-    title: "Socials",
-    links: [
-      { title: "Instagram", href: "https://www.instagram.com/golden_garden.by.hassanbaajour/?hl=en", target: "_blank" },
-      { title: "TikTok", href: "https://www.tiktok.com/@golden_garden.by.hassan", target: "_blank" },
-    ],
-  },
-];
-
-const contactColumns = [
-  { title: "Location", data: "Baysarieh, South Lebanon", href: "https://www.google.com/maps/place/Lebanon/@33.4139686,35.7210673,9z/data=!4m6!3m5!1s0x151f17028422aaad:0xcc7d34096c00f970!8m2!3d33.854721!4d35.862285!16zL20vMDRocXo?entry=ttu&g_ep=EgoyMDI2MDYxMy4wIKXMDSoASAFQAw%3D%3D", target: "_blank" },
-  { title: "Email Us", data: "hello@goldengarden.com", href: "mailto:hello@goldengarden.com" },
-  { title: "Call Us Now", data: "+961 71 635 664", href: "tel:+96171635664" },
-];
+const byOrder = (a: CanopyEntry, b: CanopyEntry) =>
+  Number(a.Order) - Number(b.Order);
+const targetOf = (entry: CanopyEntry) =>
+  entry["New Tab"] === "true" ? "_blank" : undefined;
 
 const bracketStyle = {
   fontFamily: "var(--font-sans)",
@@ -59,38 +34,58 @@ const contactDataStyle = {
   color: "var(--color-white)",
 };
 
-function NavCol({ col }: { col: { title: string; links: NavLink[] } }) {
+function NavCol({ title, links }: { title: string; links: CanopyEntry[] }) {
   return (
     <div className="flex flex-col gap-[12px]">
       <span className="inline-flex items-center gap-[8px]" style={{ color: "var(--color-white)" }}>
         <span style={bracketStyle}>[</span>
-        <span className="body-16-regular" style={{ color: "var(--color-white)", textTransform: "uppercase" }}>{col.title}</span>
+        <span className="body-16-regular" style={{ color: "var(--color-white)", textTransform: "uppercase" }}>{title}</span>
         <span style={bracketStyle}>]</span>
       </span>
-      {col.links.map((link) => (
-        <Link key={link.title} href={link.href} className="menu-item" style={{ color: "var(--color-white)" }} target={link.target} rel={link.target === "_blank" ? "noopener noreferrer" : undefined}>
-          <RollingText>{link.title}</RollingText>
+      {links.map((link) => (
+        <Link key={link.id} href={link.URL} className="menu-item" style={{ color: "var(--color-white)" }} target={targetOf(link)} rel={targetOf(link) === "_blank" ? "noopener noreferrer" : undefined}>
+          <RollingText>{link.Label}</RollingText>
         </Link>
       ))}
     </div>
   );
 }
 
-function ContactCol({ col }: { col: (typeof contactColumns)[number] }) {
+function ContactCol({ item }: { item: CanopyEntry }) {
   return (
     <div className="flex flex-col gap-[12px]">
-      <span className="body-16-regular" style={{ color: "var(--color-white)", textTransform: "uppercase" }}>{col.title}</span>
-      <Link href={col.href} className="menu-item" style={{ ...contactDataStyle }} target={col.target} rel={col.target === "_blank" ? "noopener noreferrer" : undefined}>
-        <RollingText lineHeight="1.4em">{col.data}</RollingText>
+      <span className="body-16-regular" style={{ color: "var(--color-white)", textTransform: "uppercase" }}>{item.Label}</span>
+      <Link href={item.URL} className="menu-item" style={{ ...contactDataStyle }} target={targetOf(item)} rel={targetOf(item) === "_blank" ? "noopener noreferrer" : undefined}>
+        <RollingText lineHeight="1.4em">{item.Value}</RollingText>
       </Link>
     </div>
   );
 }
 
-export default function Footer() {
+export default function Footer({
+  links,
+  contact,
+  settings,
+}: {
+  links: CanopyEntry[];
+  contact: CanopyEntry[];
+  settings: CanopyEntry | null;
+}) {
   const [ctaHovered, setCtaHovered] = useState(false);
   const footerRef = useRef<HTMLElement>(null);
   const [reveal, setReveal] = useState(false);
+
+  const navColumns = GROUP_ORDER.map((group) => ({
+    title: group,
+    links: links.filter((l) => l.Group === group).sort(byOrder),
+  })).filter((col) => col.links.length > 0);
+  const contactColumns = [...contact].sort(byOrder);
+
+  const ctaHeading = settings?.["CTA Heading"] ?? "";
+  const ctaButtonText = settings?.["CTA Button Text"] ?? "";
+  const ctaButtonLink = settings?.["CTA Button Link"] ?? "";
+  const copyrightLeft = settings?.["Copyright Left"] ?? "";
+  const copyrightRight = settings?.["Copyright Right"] ?? "";
 
   // On tablet+ the footer is pinned behind the page so it shows through the
   // transparent gap left by the pinned Success Stories cards. We only do this
@@ -138,10 +133,10 @@ export default function Footer() {
           {/* Mobile: nav 2-col grid, then contact 1-col — separate stacks */}
           <div className="flex flex-col gap-[41px] tablet:hidden">
             <div className="grid grid-cols-2 gap-x-[10px] gap-y-[24px]">
-              {navColumns.map((col) => <NavCol key={col.title} col={col} />)}
+              {navColumns.map((col) => <NavCol key={col.title} title={col.title} links={col.links} />)}
             </div>
             <div className="flex flex-col gap-[20px]">
-              {contactColumns.map((col) => <ContactCol key={col.title} col={col} />)}
+              {contactColumns.map((item) => <ContactCol key={item.id} item={item} />)}
             </div>
           </div>
 
@@ -150,9 +145,9 @@ export default function Footer() {
             {navColumns.map((nav, i) => (
               <div key={nav.title} className="flex flex-col gap-[60px] desktop:gap-[72px]">
                 <div className="flex-1">
-                  <NavCol col={nav} />
+                  <NavCol title={nav.title} links={nav.links} />
                 </div>
-                <ContactCol col={contactColumns[i]} />
+                {contactColumns[i] && <ContactCol item={contactColumns[i]} />}
               </div>
             ))}
           </div>
@@ -165,21 +160,19 @@ export default function Footer() {
           style={{ backgroundColor: "var(--color-mint-green)", borderRadius: "12px" }}
         >
           <h2
-            className="heading-editorial tablet:max-w-[820px]"
+            className="heading-editorial tablet:max-w-[820px] [&>p]:m-0"
             style={{ color: "var(--color-dark-teal)" }}
-          >
-            Let&apos;s grow something{" "}
-            <em style={{ fontStyle: "italic" }}>beautiful.</em>
-          </h2>
+            dangerouslySetInnerHTML={{ __html: ctaHeading }}
+          />
           <Link
-            href="/contact"
+            href={ctaButtonLink || "#"}
             className="cta-link inline-flex items-center gap-[8px] no-underline"
             onMouseEnter={() => setCtaHovered(true)}
             onMouseLeave={() => setCtaHovered(false)}
             style={{ color: "var(--color-dark-teal)", transition: "color 0.6s cubic-bezier(0.44, 0, 0.56, 1)", flexShrink: 0 }}
           >
             <span style={{ ...bracketStyle, color: "var(--color-dark-teal)" }}>[</span>
-            <span className="body-16-regular" style={{ color: "var(--color-dark-teal)" }}>START A GARDEN</span>
+            <span className="body-16-regular" style={{ color: "var(--color-dark-teal)" }}>{ctaButtonText}</span>
             <span aria-hidden="true" style={{ display: "inline-block", position: "relative", width: 20, height: 20, overflow: "hidden", flexShrink: 0 }}>
               <span style={{ position: "absolute", inset: 0, display: "flex", transition: ARROW_TRANSITION, transform: ctaHovered ? "translate(110%, -110%)" : "translate(0, 0)" }}>
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -198,8 +191,8 @@ export default function Footer() {
 
         {/* Copyright */}
         <div className="mt-[30px] tablet:mt-[40px] flex flex-col gap-[16px] items-center tablet:flex-row tablet:justify-between tablet:items-center">
-          <p className="body-20-regular-2">© 2026 Copyright - Golden Garden</p>
-          <p className="body-20-regular-2">All rights reserved.</p>
+          <p className="body-20-regular-2">{copyrightLeft}</p>
+          <p className="body-20-regular-2">{copyrightRight}</p>
         </div>
 
       </div>

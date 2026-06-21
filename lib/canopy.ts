@@ -60,10 +60,23 @@ export async function getCategoryEntries(slug: string): Promise<CanopyEntry[]> {
 }
 
 /**
- * Returns the last entry of a category flagged as the default, or null when
- * there is none.
+ * Returns the entry of a category flagged as the default, or null when there is
+ * none. Assumes a single default entry per category.
  */
 export async function getDefaultEntry(slug: string): Promise<CanopyEntry | null> {
   const entries = await getCategoryEntries(slug);
-  return [...entries].reverse().find(isDefault) ?? null;
+  return entries.find(isDefault) ?? null;
+}
+
+/**
+ * Returns the first entry of a category whose `field` equals `value`, or null
+ * when there is none. Useful when a category holds one entry per page/variant.
+ */
+export async function getEntryByField(
+  slug: string,
+  field: string,
+  value: string
+): Promise<CanopyEntry | null> {
+  const entries = await getCategoryEntries(slug);
+  return entries.find((entry) => entry[field] === value) ?? null;
 }

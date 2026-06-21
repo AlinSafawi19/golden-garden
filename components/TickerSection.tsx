@@ -1,36 +1,33 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import type { CanopyEntry } from "@/lib/canopy";
 
 const SPRING =
   "opacity 0.4s cubic-bezier(0.34, 1.2, 0.64, 1), transform 0.4s cubic-bezier(0.34, 1.2, 0.64, 1)";
 
-const IMG1_URL = "https://framerusercontent.com/images/76SESx55PZQTsvHiVatoZyaZR8.png?width=440&height=350";
-const IMG2_URL = "https://framerusercontent.com/images/ySuHeBzPgTDgdr6rEOQ9dNAXm7o.png?width=440&height=350";
-const IMG3_URL = "https://framerusercontent.com/images/Qn9EmOAfD61P9Jf4OPH5jIymKH8.png?width=440&height=350";
-
-function TickerItem() {
+function TickerItem({ text1, text2 }: { text1: string; text2: string }) {
   return (
     <div className="shrink-0 flex flex-row items-center gap-[25px]">
-      <span className="heading-1b" style={{ color: "var(--color-off-white)" }}>LANDSCAPE–CREATION</span>
-      <span className="heading-1b" style={{ color: "var(--color-off-white)" }}>LANDSCAPE–CREATION</span>
+      <span className="heading-1b" style={{ color: "var(--color-off-white)" }}>{text1}</span>
+      <span className="heading-1b" style={{ color: "var(--color-off-white)" }}>{text2}</span>
     </div>
   );
 }
 
-function TickerRow() {
+function TickerRow({ text1, text2 }: { text1: string; text2: string }) {
   return (
     <div className="relative overflow-hidden w-full">
       <div className="ticker-track" style={{ gap: 10, mixBlendMode: "exclusion" }}>
         {Array.from({ length: 6 }).map((_, i) => (
-          <TickerItem key={i} />
+          <TickerItem key={i} text1={text1} text2={text2} />
         ))}
       </div>
     </div>
   );
 }
 
-export default function TickerSection() {
+export default function TickerSection({ ticker }: { ticker: CanopyEntry | null }) {
   const ref = useRef<HTMLElement>(null);
   const img1Ref = useRef<HTMLDivElement>(null);
   const img2Ref = useRef<HTMLDivElement>(null);
@@ -39,6 +36,12 @@ export default function TickerSection() {
   const [img1Visible, setImg1Visible] = useState(false);
   const [img2Visible, setImg2Visible] = useState(false);
   const [img3Visible, setImg3Visible] = useState(false);
+
+  const text1 = ticker?.["Scrolling Text 1"] ?? "";
+  const text2 = ticker?.["Scrolling Text 2"] ?? "";
+  const leftImage = ticker?.["Left Image"] ?? null;
+  const rightImage = ticker?.["Right Image"] ?? null;
+  const centerImage = ticker?.["Center Image"] ?? null;
 
   useEffect(() => {
     const el = ref.current;
@@ -95,54 +98,60 @@ export default function TickerSection() {
       }}
     >
       {/* Rolling image - must be painted before TickerRow so mix-blend-mode composites against it */}
-      <div
-        ref={img1Ref}
-        className="unroll-mask absolute top-0 left-[20px] tablet:left-[30px] w-[100px] h-[80px] tablet:w-[150px] tablet:h-[119px] desktop:w-[220px] desktop:h-[175px] rounded-[8px] tablet:rounded-[12px] overflow-hidden"
-        style={{
-          animation: img1Visible ? "unroll 0.8s linear forwards" : "none",
-        }}
-      >
-        <img
-          src={IMG1_URL}
-          alt=""
-          className="w-full h-full object-cover"
-          style={{ borderRadius: "inherit" }}
-        />
-      </div>
+      {leftImage && (
+        <div
+          ref={img1Ref}
+          className="unroll-mask absolute top-0 left-[20px] tablet:left-[30px] w-[100px] h-[80px] tablet:w-[150px] tablet:h-[119px] desktop:w-[220px] desktop:h-[175px] rounded-[8px] tablet:rounded-[12px] overflow-hidden"
+          style={{
+            animation: img1Visible ? "unroll 0.8s linear forwards" : "none",
+          }}
+        >
+          <img
+            src={leftImage}
+            alt=""
+            className="w-full h-full object-cover"
+            style={{ borderRadius: "inherit" }}
+          />
+        </div>
+      )}
 
-      <div
-        ref={img2Ref}
-        className="unroll-mask absolute top-0 right-[20px] tablet:right-[30px] desktop:right-[208px] w-[100px] h-[80px] tablet:w-[150px] tablet:h-[119px] desktop:w-[220px] desktop:h-[175px] rounded-[8px] tablet:rounded-[12px] overflow-hidden"
-        style={{
-          animation: img2Visible ? "unroll 0.8s linear forwards" : "none",
-        }}
-      >
-        <img
-          src={IMG2_URL}
-          alt=""
-          className="w-full h-full object-cover"
-          style={{ borderRadius: "inherit" }}
-        />
-      </div>
+      {rightImage && (
+        <div
+          ref={img2Ref}
+          className="unroll-mask absolute top-0 right-[20px] tablet:right-[30px] desktop:right-[208px] w-[100px] h-[80px] tablet:w-[150px] tablet:h-[119px] desktop:w-[220px] desktop:h-[175px] rounded-[8px] tablet:rounded-[12px] overflow-hidden"
+          style={{
+            animation: img2Visible ? "unroll 0.8s linear forwards" : "none",
+          }}
+        >
+          <img
+            src={rightImage}
+            alt=""
+            className="w-full h-full object-cover"
+            style={{ borderRadius: "inherit" }}
+          />
+        </div>
+      )}
 
-      <TickerRow />
+      <TickerRow text1={text1} text2={text2} />
 
       {/* Olive image - bottom center, above ticker, unaffected by blend */}
-      <div
-        ref={img3Ref}
-        className="unroll-mask absolute bottom-0 left-1/2 -translate-x-1/2 w-[100px] h-[80px] tablet:w-[150px] tablet:h-[119px] desktop:w-[220px] desktop:h-[175px] rounded-[8px] tablet:rounded-[12px] overflow-hidden"
-        style={{
-          zIndex: 1,
-          animation: img3Visible ? "unroll 0.8s linear forwards" : "none",
-        }}
-      >
-        <img
-          src={IMG3_URL}
-          alt=""
-          className="w-full h-full object-cover"
-          style={{ borderRadius: "inherit" }}
-        />
-      </div>
+      {centerImage && (
+        <div
+          ref={img3Ref}
+          className="unroll-mask absolute bottom-0 left-1/2 -translate-x-1/2 w-[100px] h-[80px] tablet:w-[150px] tablet:h-[119px] desktop:w-[220px] desktop:h-[175px] rounded-[8px] tablet:rounded-[12px] overflow-hidden"
+          style={{
+            zIndex: 1,
+            animation: img3Visible ? "unroll 0.8s linear forwards" : "none",
+          }}
+        >
+          <img
+            src={centerImage}
+            alt=""
+            className="w-full h-full object-cover"
+            style={{ borderRadius: "inherit" }}
+          />
+        </div>
+      )}
     </section>
   );
 }

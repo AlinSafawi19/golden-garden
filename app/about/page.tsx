@@ -2,8 +2,11 @@ import AboutHero from "@/components/AboutHero";
 import HeroSlideshow from "@/components/HeroSlideshow";
 import AboutSection from "@/components/AboutSection";
 import TickerSection from "@/components/TickerSection";
+import { getEntryByField } from "@/lib/canopy";
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const ticker = await getEntryByField("moving-text-strip", "Page", "About");
+
   return (
     <div className="pb-[60px] tablet:pb-[80px] desktop:pb-[100px] bg-[var(--color-white)]">
       <AboutHero />
@@ -14,7 +17,7 @@ export default function AboutPage() {
       </section>
 
       <AboutSection />
-      <TickerSection />
+      <TickerSection ticker={ticker} />
     </div>
   );
 }

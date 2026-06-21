@@ -5,28 +5,23 @@ import { usePathname } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 import RollingText from "@/components/RollingText";
 import Logo from "@/components/Logo";
-import type { CanopyEntry } from "@/lib/canopy";
+import { getListField, type CanopyEntry, type CanopyListItem } from "@/lib/canopy";
 
-const byOrder = (a: CanopyEntry, b: CanopyEntry) =>
+const byOrder = (a: CanopyListItem, b: CanopyListItem) =>
   Number(a.Order) - Number(b.Order);
-const targetOf = (entry: CanopyEntry) =>
+const targetOf = (entry: CanopyListItem) =>
   entry["New Tab"] === "true" ? "_blank" : undefined;
 
-export default function Navbar({
-  links,
-  settings,
-}: {
-  links: CanopyEntry[];
-  settings: CanopyEntry | null;
-}) {
+export default function Navbar({ header }: { header: CanopyEntry | null }) {
   const pathname = usePathname();
 
+  const links = getListField(header, "Links");
   const primary = links.filter((l) => l.Group === "Primary").sort(byOrder);
   const more = links.filter((l) => l.Group === "More").sort(byOrder);
   const allLinks = [...primary, ...more];
-  const moreLabel = settings?.["Dropdown Label"] ?? "";
-  const ctaText = settings?.["CTA Text"] ?? "";
-  const ctaLink = settings?.["CTA Link"] ?? "";
+  const moreLabel = header?.["Dropdown Label"] ?? "";
+  const ctaText = header?.["CTA Text"] ?? "";
+  const ctaLink = header?.["CTA Link"] ?? "";
   const overlayBg =
     pathname === "/"
       ? "var(--color-off-white)"
@@ -132,7 +127,7 @@ export default function Navbar({
         {/* Item List — tablet and desktop */}
         <nav className="hidden tablet:flex flex-row gap-[44px] items-center">
           {primary.map((item) => (
-            <div key={item.id} className="relative group">
+            <div key={item.Label} className="relative group">
               <Link href={item.URL} className="menu-item" target={targetOf(item)} rel={targetOf(item) === "_blank" ? "noopener noreferrer" : undefined}>
                 <RollingText>{item.Label}</RollingText>
               </Link>
@@ -185,7 +180,7 @@ export default function Navbar({
               <nav className="flex flex-col p-[20px] gap-[6px]">
                 {more.map((item) => (
                   <Link
-                    key={item.id}
+                    key={item.Label}
                     href={item.URL}
                     className="menu-item"
                     target={targetOf(item)}
@@ -243,7 +238,7 @@ export default function Navbar({
           <div className="flex flex-col gap-[6px]">
             {allLinks.map((item) => (
               <Link
-                key={item.id}
+                key={item.Label}
                 href={item.URL}
                 className="menu-item"
                 target={targetOf(item)}

@@ -4,7 +4,7 @@ import { Rethink_Sans, Poppins } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SmoothScroll from "@/components/SmoothScroll";
-import { getCategoryEntries, getFirstEntry } from "@/lib/canopy";
+import { getFirstEntry } from "@/lib/canopy";
 import "./globals.css";
 
 const libreCaslon = localFont({
@@ -77,24 +77,20 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [headerLinks, footerLinks, footerContact, headerSettings, footerSettings] =
-    await Promise.all([
-      getCategoryEntries("header-links"),
-      getCategoryEntries("footer-links"),
-      getCategoryEntries("footer-contact"),
-      getFirstEntry("header-settings"),
-      getFirstEntry("footer-settings"),
-    ]);
+  const [header, footer] = await Promise.all([
+    getFirstEntry("header"),
+    getFirstEntry("footer"),
+  ]);
 
   return (
     <html lang="en" className={`${libreCaslon.variable} ${rethinkSans.variable} ${poppins.variable} scroll-smooth`}>
       <body className="flex flex-col min-h-screen bg-[var(--color-soft-white)]">
         <SmoothScroll />
-        <Navbar links={headerLinks} settings={headerSettings} />
+        <Navbar header={header} />
         <main className="flex-1 relative z-[1]" style={{ paddingBottom: "var(--footer-h, 0px)" }}>
           {children}
         </main>
-        <Footer links={footerLinks} contact={footerContact} settings={footerSettings} />
+        <Footer footer={footer} />
       </body>
     </html>
   );

@@ -4,16 +4,16 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import RollingText from "@/components/RollingText";
 import Logo from "@/components/Logo";
-import type { CanopyEntry } from "@/lib/canopy";
+import { getListField, type CanopyEntry, type CanopyListItem } from "@/lib/canopy";
 
 const ARROW_TRANSITION = "transform 0.6s cubic-bezier(0.76, 0, 0.24, 1)";
 
 // Footer nav columns, left-to-right.
 const GROUP_ORDER = ["Main Pages", "Company", "Socials"];
 
-const byOrder = (a: CanopyEntry, b: CanopyEntry) =>
+const byOrder = (a: CanopyListItem, b: CanopyListItem) =>
   Number(a.Order) - Number(b.Order);
-const targetOf = (entry: CanopyEntry) =>
+const targetOf = (entry: CanopyListItem) =>
   entry["New Tab"] === "true" ? "_blank" : undefined;
 
 const bracketStyle = {
@@ -34,7 +34,7 @@ const contactDataStyle = {
   color: "var(--color-white)",
 };
 
-function NavCol({ title, links }: { title: string; links: CanopyEntry[] }) {
+function NavCol({ title, links }: { title: string; links: CanopyListItem[] }) {
   return (
     <div className="flex flex-col gap-[12px]">
       <span className="inline-flex items-center gap-[8px]" style={{ color: "var(--color-white)" }}>
@@ -43,7 +43,7 @@ function NavCol({ title, links }: { title: string; links: CanopyEntry[] }) {
         <span style={bracketStyle}>]</span>
       </span>
       {links.map((link) => (
-        <Link key={link.id} href={link.URL} className="menu-item" style={{ color: "var(--color-white)" }} target={targetOf(link)} rel={targetOf(link) === "_blank" ? "noopener noreferrer" : undefined}>
+        <Link key={link.Label} href={link.URL} className="menu-item" style={{ color: "var(--color-white)" }} target={targetOf(link)} rel={targetOf(link) === "_blank" ? "noopener noreferrer" : undefined}>
           <RollingText>{link.Label}</RollingText>
         </Link>
       ))}
@@ -51,7 +51,7 @@ function NavCol({ title, links }: { title: string; links: CanopyEntry[] }) {
   );
 }
 
-function ContactCol({ item }: { item: CanopyEntry }) {
+function ContactCol({ item }: { item: CanopyListItem }) {
   return (
     <div className="flex flex-col gap-[12px]">
       <span className="body-16-regular" style={{ color: "var(--color-white)", textTransform: "uppercase" }}>{item.Label}</span>
@@ -62,30 +62,24 @@ function ContactCol({ item }: { item: CanopyEntry }) {
   );
 }
 
-export default function Footer({
-  links,
-  contact,
-  settings,
-}: {
-  links: CanopyEntry[];
-  contact: CanopyEntry[];
-  settings: CanopyEntry | null;
-}) {
+export default function Footer({ footer }: { footer: CanopyEntry | null }) {
   const [ctaHovered, setCtaHovered] = useState(false);
   const footerRef = useRef<HTMLElement>(null);
   const [reveal, setReveal] = useState(false);
 
+  const links = getListField(footer, "Links");
+  const contact = getListField(footer, "Contact");
   const navColumns = GROUP_ORDER.map((group) => ({
     title: group,
     links: links.filter((l) => l.Group === group).sort(byOrder),
   })).filter((col) => col.links.length > 0);
   const contactColumns = [...contact].sort(byOrder);
 
-  const ctaHeading = settings?.["CTA Heading"] ?? "";
-  const ctaButtonText = settings?.["CTA Button Text"] ?? "";
-  const ctaButtonLink = settings?.["CTA Button Link"] ?? "";
-  const copyrightLeft = settings?.["Copyright Left"] ?? "";
-  const copyrightRight = settings?.["Copyright Right"] ?? "";
+  const ctaHeading = footer?.["CTA Heading"] ?? "";
+  const ctaButtonText = footer?.["CTA Button Text"] ?? "";
+  const ctaButtonLink = footer?.["CTA Button Link"] ?? "";
+  const copyrightLeft = footer?.["Copyright Left"] ?? "";
+  const copyrightRight = footer?.["Copyright Right"] ?? "";
 
   // On tablet+ the footer is pinned behind the page so it shows through the
   // transparent gap left by the pinned Success Stories cards. We only do this
@@ -136,7 +130,7 @@ export default function Footer({
               {navColumns.map((col) => <NavCol key={col.title} title={col.title} links={col.links} />)}
             </div>
             <div className="flex flex-col gap-[20px]">
-              {contactColumns.map((item) => <ContactCol key={item.id} item={item} />)}
+              {contactColumns.map((item) => <ContactCol key={item.Label} item={item} />)}
             </div>
           </div>
 

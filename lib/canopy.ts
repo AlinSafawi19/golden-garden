@@ -19,8 +19,6 @@ export type CanopyEntry = {
 
 export type CanopyListItem = { [field: string]: string };
 
-const isDefault = (entry: CanopyEntry) => entry.Default === "true";
-
 /**
  * Reads a `list` sub-field from an entry as an array of rows. Returns [] when
  * the field is missing or not a list.
@@ -72,15 +70,6 @@ export async function getCategoryEntries(slug: string): Promise<CanopyEntry[]> {
     console.warn(`Canopy "${slug}" request errored.`, err);
     return [];
   }
-}
-
-/**
- * Returns the entry of a category flagged as the default, or null when there is
- * none. Assumes a single default entry per category.
- */
-export async function getDefaultEntry(slug: string): Promise<CanopyEntry | null> {
-  const entries = await getCategoryEntries(slug);
-  return entries.find(isDefault) ?? null;
 }
 
 /**
